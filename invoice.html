@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoice Billing Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 0;
+      margin: 0;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+    }
+    .invoice-container {
+      width: 794px; /* A4 width in px at 96dpi */
+      height: 1123px; /* A4 height in px at 96dpi */
+      margin: 20px 0;
+      position: relative;
+      background-image: url('images/TBIS INVOICE PAD.jpg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center top;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+      padding: 140px 50px 80px 50px;
+      box-sizing: border-box;
+    }
+
+    .header-info {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    .header-info .left, .header-info .right {
+      width: 45%;
+    }
+    .header-info strong {
+      font-weight: 700;
+    }
+
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      background: transparent;
+    }
+    th, td {
+      border: 1px solid #0B3861;
+      padding: 5px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0B3861;
+      background: rgba(255, 255, 255, 0.7);
+    }
+    tbody td input[type="text"],
+    tbody td input[type="number"] {
+      width: 100%;
+      box-sizing: border-box;
+      border: none;
+      background: transparent;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 600;
+      color: #0B3861;
+      outline: none;
+    }
+    tbody td input[type="number"]::-webkit-inner-spin-button,
+    tbody td input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 4px 8px;
+      cursor: pointer;
+      font-size: 12px;
+      border-radius: 4px;
+      transition: background-color 0.3s ease;
+    }
+    .delete-btn:hover {
+      background-color: #c62828;
+    }
+
+    tfoot td {
+      font-weight: 700;
+      font-size: 16px;
+      color: #0B3861;
+      background: rgba(255, 255, 255, 0.7);
+      text-align: right;
+      padding-right: 10px;
+    }
+    tfoot td#total-amount {
+      text-align: center;
+      padding-right: 0;
+    }
+
+    #controls {
+      margin: 20px 0;
+      text-align: center;
+    }
+    #controls button {
+      padding: 8px 16px;
+      margin: 0 10px;
+      font-size: 14px;
+      cursor: pointer;
+      border-radius: 4px;
+      border: 1px solid #0B3861;
+      background-color: white;
+      color: #0B3861;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    #controls button:hover {
+      background-color: #0B3861;
+      color: white;
+    }
+
+    /* Hide controls on print */
+    @media print {
+      #controls, #controls * {
+        display: none !important;
+      }
+      tbody td input, tbody td button {
+        border: none !important;
+        background: transparent !important;
+        color: black !important;
+        pointer-events: none;
+        font-weight: 600;
+      }
+      .delete-btn {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="invoice-container" id="bill-area">
+
+    <div class="header-info">
+      <div class="left">
+        <p><strong>INVOICE</strong></p>
+        <p>Invoice No: <input type="text" id="invoice-no" placeholder="#INTBIS240" /></p>
+        <p>Date: <input type="date" id="invoice-date" /></p>
+        <br/>
+        <p><strong>INVOICE TO:</strong></p>
+        <p>Name: <input type="text" id="customer-name" placeholder="Customer Name" /></p>
+        <p>Address: <input type="text" id="customer-address" placeholder="Customer Address" /></p>
+      </div>
+      <div class="right">
+        <p><strong>PAYMENT INFORMATION:</strong></p>
+        <p>Company: Tech BD IT Solutions</p>
+        <p>Name: Md. Jems Ahmed</p>
+        <p>Account / Cash: <input type="text" id="account-cash" placeholder="Account / Cash Info" /></p>
+      </div>
+    </div>
+
+    <table id="billing-table">
+      <thead>
+        <tr>
+          <th>SL.NO</th>
+          <th>DESCRIPTION</th>
+          <th>QNT</th>
+          <th>RATE</th>
+          <th>AMOUNT</th>
+          <th class="no-print">DELETE</th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <!-- Rows will be added here -->
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="4" style="text-align:right;">TOTAL:</td>
+          <td id="total-amount">0.00</td>
+          <td class="no-print"></td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+
+  <div id="controls">
+    <button id="add-row-btn">Add Row</button>
+    <button id="preview-btn">Preview</button>
+    <button id="download-pdf">Download PDF</button>
+    <button id="print-btn">Print</button>
+  </div>
+
+  <!-- JS Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+  <script>
+    const tableBody = document.getElementById("table-body");
+    const totalAmountCell = document.getElementById("total-amount");
+    const addRowBtn = document.getElementById("add-row-btn");
+    const previewBtn = document.getElementById("preview-btn");
+    const downloadPdfBtn = document.getElementById("download-pdf");
+    const printBtn = document.getElementById("print-btn");
+    const billArea = document.getElementById("bill-area");
+
+    function recalcAmounts() {
+      let total = 0;
+      Array.from(tableBody.children).forEach((row, index) => {
+        const qnt = parseFloat(row.querySelector(".qnt").value) || 0;
+        const rate = parseFloat(row.querySelector(".rate").value) || 0;
+        const amount = qnt * rate;
+        row.querySelector(".amount").textContent = amount.toFixed(2);
+        row.querySelector(".slno").textContent = index + 1;
+        total += amount;
+      });
+      totalAmountCell.textContent = total.toFixed(2);
+    }
+
+    function addRow() {
+      const row = document.createElement("tr");
+      row.innerHTML = `
+        <td class="slno"></td>
+        <td><input type="text" class="desc" /></td>
+        <td><input type="number" class="qnt" min="0" /></td>
+        <td><input type="number" class="rate" min="0" /></td>
+        <td class="amount">0.00</td>
+        <td class="no-print"><button class="delete-btn">❌</button></td>
+      `;
+      tableBody.appendChild(row);
+      setupRowEvents(row);
+      recalcAmounts();
+    }
+
+    function setupRowEvents(row) {
+      const desc = row.querySelector(".desc");
+      const qnt = row.querySelector(".qnt");
+      const rate = row.querySelector(".rate");
+      const deleteBtn = row.querySelector(".delete-btn");
+      let lastEnter = 0;
+
+      desc.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          qnt.focus();
+        }
+      });
+
+      qnt.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          rate.focus();
+        }
+      });
+
+      rate.addEventListener("keydown", e => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          recalcAmounts();
+          if (Date.now() - lastEnter < 500) {
+            addRow();
+            setTimeout(() => tableBody.lastElementChild.querySelector(".desc").focus(), 10);
+          }
+          lastEnter = Date.now();
+        }
+      });
+
+      deleteBtn.addEventListener("click", () => {
+        row.remove();
+        recalcAmounts();
+      });
+
+      [desc, qnt, rate].forEach(el => {
+        el.addEventListener("input", recalcAmounts);
+      });
+    }
+
+    // Add initial row
+    addRow();
+
+    addRowBtn.addEventListener("click", addRow);
+
+    previewBtn.addEventListener("click", () => {
+      window.print();
+    });
+
+    printBtn.addEventListener("click", () => {
+      window.print();
+    });
+
+    downloadPdfBtn.addEventListener("click", () => {
+      html2canvas(billArea).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('p', 'pt', 'a4');
+        const pdfWidth = pdf.internal.pageSize.getWidth();
+        const pdfHeight = pdf.internal.pageSize.getHeight();
+        const ratio = canvas.width / canvas.height;
+        let imgHeight = pdfWidth / ratio;
+        if (imgHeight > pdfHeight) {
+          imgHeight = pdfHeight;
+        }
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, imgHeight);
+        pdf.save("invoice.pdf");
+      });
+    });
+  </script>
+</body>
+</html>
