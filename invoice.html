@@ -77,7 +77,8 @@
       <label for="inStock">In Stock</label>
     </div>
   </div>
-</div>  <!-- ✅ Customer Info Section -->
+</div>
+<!-- ✅ Customer Info Section -->
 <div id="customer-info" style="background: white; padding: 20px; margin-bottom: 20px; border-radius: 5px;">
   <h3>Customer Information</h3>
   <div class="customer-row" style="display: flex; gap: 40px;">
@@ -136,7 +137,8 @@
       <button onclick="window.print()" style="background: #2980b9; color: white; padding: 8px 20px; border: none; border-radius: 4px;">Print Invoice</button>
     </div>
   </div>
-</div>  <script>
+</div>
+ <script>
   const itemBarcodeInput = document.getElementById('itemBarcode');
   const salePriceInput = document.getElementById('salePrice');
   const saleQtyInput = document.getElementById('saleQty');
@@ -145,3 +147,96 @@
   const totalQtyElem = document.getElementById('totalQty');
   const totalAmountElem = document.getElementById('totalAmount');
   const discountPercentInput = document.getElementById('discountPercent');
+  const discountAmountElem = document.getElementById('discountAmount');
+  const subTotalElem = document.getElementById('SubTotal');
+  const vatInput = document.getElementById('vatInput');
+
+  function updateSummary() {
+    let totalQty = 0;
+    let totalAmount = 0;
+
+    productTableBody.querySelectorAll('tr').forEach((row, index) => {
+      const qty = parseFloat(row.querySelector('.qty').textContent) || 0;
+      const amount = parseFloat(row.querySelector('.amount').textContent) || 0;
+      row.cells[0].textContent = index + 1; // Update SL.NO
+      totalQty += qty;
+      totalAmount += amount;
+    });
+
+    totalQtyElem.textContent = totalQty;
+    totalAmountElem.textContent = totalAmount.toFixed(2);
+    updateDiscountAndSubTotal();
+  }
+
+  function updateDiscountAndSubTotal() {
+    const total = parseFloat(totalAmountElem.textContent) || 0;
+    const vatPercent = parseFloat(vatInput.value) || 0;
+    const discountPercent = parseFloat(discountPercentInput.value) || 0;
+
+    const vatAmount = (total * vatPercent) / 100;
+    const discountAmount = (total * discountPercent) / 100;
+    const subTotal = total + vatAmount - discountAmount;
+
+    discountAmountElem.textContent = discountAmount.toFixed(2);
+    subTotalElem.textContent = subTotal.toFixed(2);
+  }
+
+  function deleteRow(e) {
+    e.target.closest('tr').remove();
+    updateSummary();
+  }
+
+  [itemBarcodeInput, salePriceInput, saleQtyInput].forEach(input => {
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+
+        const description = itemBarcodeInput.value.trim();
+        const rate = parseFloat(salePriceInput.value);
+        const qty = parseInt(saleQtyInput.value);
+
+        if (!description || isNaN(rate) || isNaN(qty) || qty < 1) {
+          alert("Please enter valid product info");
+          return;
+        }
+
+        const amount = rate * qty;
+        const tr = document.createElement('tr');
+
+        tr.innerHTML = `
+          <td></td>
+          <td class="description">${description}</td>
+          <td class="rate">${rate.toFixed(2)}</td>
+          <td class="qty">${qty}</td>
+          <td class="amount">${amount.toFixed(2)}</td>
+          <td><button class="delete-btn">Delete</button></td>
+        `;
+
+        productTableBody.appendChild(tr);
+        tr.querySelector('.delete-btn').addEventListener('click', deleteRow);
+
+        itemBarcodeInput.value = '';
+        salePriceInput.value = '';
+        saleQtyInput.value = '';
+        itemBarcodeInput.focus();
+
+        updateSummary();
+      }
+    });
+  });
+
+  discountPercentInput.addEventListener('input', updateDiscountAndSubTotal);
+  vatInput.addEventListener('input', updateDiscountAndSubTotal);
+</script>
+
+<!-- ✅ Footer -->
+<footer style="background: #2c3e50; color: white; padding: 5px; font-size: 14px; text-align: center; margin-top: 20px;">
+  <span>System by: <strong>Tech BD IT Solutions</strong></span> |
+  <span>Developed by: <strong>Md. Jems Ahmed Joy</strong></span> |
+  <i class="fas fa-globe"></i> 
+  <a href="https://www-tbdits.github.io/techbditsolutions.com" target="_blank" style="color: #1abc9c; text-decoration: none;">www-tbdits.github.io/techbditsolutions.com</a> |
+  <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
+  <i class="fas fa-map-marker-alt"></i> Dhaka-1205
+</footer>
+</body>
+</html>
