@@ -150,8 +150,20 @@
       return false;
     }
   </script>
+  <!-- invoice.html (head or top of body) -->
+<script>
+window.addEventListener('DOMContentLoaded', () => {
+  const isLogged = localStorage.getItem('tbdits_logged_in');
+  if (!isLogged) {
+    // Not logged in -> redirect to login page
+    window.location.href = 'login.html';
+  }
+});
+</script>
+
 </body>
 </html>
+
 
 
 
