@@ -18,7 +18,8 @@
     padding-bottom:10px;
     margin-bottom: 30px;
   }
-  /* Left: Company info */
+  /*  ✅⤵🔰Left: Company info  ✅⤵🔰*/
+
   #company-login {
     flex: 1 1 450px;
     max-width: 450px;
@@ -39,7 +40,8 @@
     font-size: 20px;
     color: #FF0000;
   }
-/* Invoice Entry aligned right with label on left side */
+/* ✅⤵🔰 Invoice Entry aligned right with label on left side  ✅⤵🔰*/
+
 #invoice-entry {
   flex: 1 1 320px;
   max-width: 350px;
@@ -84,20 +86,23 @@
   cursor: pointer;
 }
 
-  /* Main container changed to flex-direction: column */
+  /*  ✅⤵🔰Main container changed to flex-direction: column ✅⤵🔰 */
+
   #main-content {
     display: flex;
     flex-direction: column; /* Change from row to column */
     gap: 30px;
   }
 
-  /* Container for Products and Summary side by side */
+  /* ✅⤵🔰 Container for Products and Summary side by side ✅⤵🔰 */
+
   #products-summary {
     display: flex;
     gap: 4px;
   }
 
-  /* Products Table styles */
+  /* ✅⤵🔰 Products Table styles ✅⤵🔰 */
+
   #product-table-section {
     flex: 1 1 500px;
     background: white;
@@ -141,7 +146,7 @@
   flex: 1 1 250px;
   max-width: 250px;
   background: white;
-  padding: 20px;
+  padding: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
   border-radius: 5px;
   font-size: 15px;
@@ -154,7 +159,8 @@
   text-align: center;
 }
 
-/* Label + value field inline like input */
+/*  ✅⤵🔰Label + value field inline like input ✅⤵🔰 */
+
 .summary-row {
   display: flex;
   align-items: center;
@@ -186,7 +192,8 @@
   font-weight: 700;
 }
 
-/* Inputs remain styled normally */
+/* ✅⤵🔰 Inputs remain styled normally ✅⤵🔰 */
+
 #summary-section input[type="number"] {
   width: 100%;
   padding: 6px 8px;
@@ -200,30 +207,31 @@
 </head>
 <body>
 
-<!-- Header Section: Company Info & Login -->
+<!-- ✅⤵🔰 Header Section: Company Info  ✅⤵🔰-->
+
 <div id="header-section">
 
-  <!-- Left side: Company info -->
+  <!--  ✅⤵🔰Left side: Company info  ✅⤵🔰-->
+
 <div id="company-login" style="display: flex; align-items: center; gap: 15px;">
   
-  <!-- Logo Image -->
+  <!--  ✅⤵🔰Logo Image  ✅⤵🔰-->
   <div id="company-logo">
-    <img src="images/tb.png" alt="Company Logo" style="height: 60px;">
+    <img src="images/TB.png" alt=" " style="height: 60px;">
   </div>
 
-  <!-- Company Info -->
+  <!--  ✅⤵🔰Company Info ✅⤵🔰 -->
   <div>
     <h2>Tech BD IT Solutions</h2>
     <p>Phone: +8809638665205, +8801516-573873, +8801323056735</p>
     <p>Address: Bangladesh, Dhaka-1205</p>
-    <p class="login-id">Login: <span id="login">Jems</span></p>
   </div>
-
 </div>
 
-  <!-- Right side: Invoice entry -->
-<div id="invoice-entry">
 
+  <!--  ✅⤵🔰Right side: Invoice entry ✅⤵🔰 -->
+
+<div id="invoice-entry">
   <div class="invoice-form-group">
     <label for="invoiceNumber">Invoice Number:</label>
     <input type="text" id="invoiceNumber" placeholder=" " />
@@ -252,7 +260,7 @@
 </div>
 
   <style>
-  /* Container styling */
+  /*  ✅⤵🔰Container styling ✅⤵🔰 */
   #customer-info {
     max-width: 100%;
     background: white;
@@ -268,14 +276,14 @@
     margin-bottom: 10px;
   }
 
-  /* Row containing two fields */
+  /*  ✅⤵🔰Row containing two fields ✅⤵🔰 */
   .customer-row {
     display: flex;
-    gap: 20px;
-    margin-bottom:5px;
+    gap: 40px;
+    margin-bottom:2px;
   }
 
-  /* Label + input side-by-side */
+  /*  ✅⤵🔰Label + input side-by-side ✅⤵🔰 */
   .form-group-horizontal {
     display: flex;
     align-items: center;
@@ -291,7 +299,7 @@
 
   .form-group-horizontal input[type="text"] {
     flex: 1;
-    padding: 4px 4px;
+    padding: 3px 2px;
     font-size: 14px;
     border-radius: 4px;
     border: 1px solid #ccc;
@@ -322,7 +330,8 @@
   </div>
 </div>
 
-  <!-- Container for Products and Summary side by side -->
+  <!-- ✅⤵🔰 Container for Products and Summary side by side ✅⤵🔰 -->
+
   <div id="products-summary">
     <!-- Products Table -->
     <div id="product-table-section">
@@ -344,7 +353,7 @@
       </table>
     </div>
 
-<!-- Summary Section -->
+<!--  ✅⤵🔰Summary Section  ✅⤵🔰-->
 <div id="summary-section">
 
   <div class="summary-row">
@@ -377,7 +386,7 @@
     <div id="SubTotal" class="value-box total">0.00</div>
   </div>
 
-<!-- Print Button -->
+<!--  ✅⤵🔰Print Button ✅⤵🔰 -->
 <div style="text-align: center; margin-top: 10px;">
   <button onclick="window.print()" style="
     background: #3498db;
@@ -496,4 +505,23 @@
   discountPercentInput.addEventListener('input', updateDiscountAndSubTotal);
 </script>
 
+<!-- 🔻 Simple One-Line Footer 🔻 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+<footer style="
+  background: #2c3e50;
+  color: white;
+  padding: 5px 6px;
+  font-size: 14px;
+  text-align: center;
+  margin-top:3px;
+  border-top: 1px solid #27ae60;
+">
+  <span>System by: <strong>Tech BD IT Solutions</strong></span> | 
+<span>Developed by: <strong>Md. Jems Ahmed Joy></span>
+
+  <i class="fas fa-globe"></i> <a href="www-tbdits.github.io/techbditsolutions.com" target="_blank" style="color: #1abc9c; text-decoration: none;">www-tbdits.github.io/techbditsolutions.com</a> |
+  <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
+  <i class="fas fa-map-marker-alt"></i> Dhaka-1205
+</footer>
 
