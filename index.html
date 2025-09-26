@@ -1,3 +1,8 @@
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="bn">
 <head>
@@ -21,6 +26,7 @@
       color: #333;
     }
 
+    /* Login container with white/light background */
     .login-container {
       background: #fff;
       border-radius: 12px;
@@ -114,6 +120,7 @@
 <body>
   <div class="login-container" role="main" aria-label="Login Form">
     <div class="logo">
+      <!-- নিজের লোগো দিতে এখানে URL বসান -->
       <img src="images/PosLogo.png" alt="Company Logo" />
     </div>
 
@@ -137,12 +144,11 @@
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value.trim();
 
+      // Simple demo validation
       if(username === "jems" && password === "6735") {
-        // লগইন সফল হলে sessionStorage তে একটি ফ্ল্যাগ সেট করবো
-        sessionStorage.setItem('loggedIn', 'true');
         alert("Login Successful! Redirecting to Billing Page...");
-        // invoice.html পেজে পাঠানো
-        window.location.href = "invoice.html";
+        // আপনার বিলিং পেজের URL এখানে বসান
+       window.location.href = "invoice.html";
       } else {
         alert("Invalid username or password!");
       }
@@ -151,4 +157,3 @@
   </script>
 </body>
 </html>
-
