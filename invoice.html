@@ -230,41 +230,38 @@ body {
 <!--  ✅⤵🔰LogoutBtn ✅⤵🔰 -->
 <button id="logoutBtn" style="background-color: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 1px; cursor: pointer;">
   Logout
-<body>
-  <script>
+</button>
+
+<script>
+  // Check if user is logged in on page load
+  window.onload = () => {
     const isLoggedIn = localStorage.getItem('tbdits_logged_in');
     if (isLoggedIn !== 'true') {
-      window.location.href = "login.html"; // অথবা তোমার index.html
+      // Redirect to login page if not logged in
+      window.location.href = "index.html";  // অথবা তোমার login পেজের নাম
     }
-  </script>
+  };
 
-  <!-- এরপর শুরু হবে তোমার বাকি HTML -->
-</button>
-<script>
-  // ✅ Check if user is logged in
-  const isLoggedIn = localStorage.getItem('tbdits_logged_in');
+  // Logout button functionality
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('tbdits_logged_in');
+    localStorage.removeItem('tbdits_user');
 
-  if (isLoggedIn !== 'true') {
-    // Not logged in → redirect to login page
-    window.location.href = "login.html"; // অথবা index.html যেখানে তোমার লগইন ফর্ম আছে
-  }
+    // Redirect to login page after logout
+    window.location.href = 'index.html';  // তোমার login পেজের নাম
+  });
+
+  // Prevent back button from going to protected page after logout
+  window.history.pushState(null, '', window.location.href);
+  window.onpopstate = function () {
+    window.history.pushState(null, '', window.location.href);
+    const isLoggedIn = localStorage.getItem('tbdits_logged_in');
+    if (isLoggedIn !== 'true') {
+      window.location.href = 'index.html';  // তোমার login পেজের নাম
+    }
+  };
 </script>
 
-document.getElementById('logoutBtn')?.addEventListener('click', () => {
-  localStorage.removeItem('tbdits_logged_in');
-  localStorage.removeItem('tbdits_user');
-  window.location.href = 'index.html';  // ekhane jaygay 'index.html'
-});
-</script>
-<script>
-  // ✅ Check if user is logged in
-  const isLoggedIn = localStorage.getItem('tbdits_logged_in');
-
-  if (isLoggedIn !== 'true') {
-    // Not logged in → redirect to login page
-    window.location.href = "index.html"; // অথবা index.html যেখানে তোমার লগইন ফর্ম আছে
-  }
-</script>
 
   </div>
 </div>
@@ -565,6 +562,7 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
