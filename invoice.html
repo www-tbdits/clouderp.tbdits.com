@@ -238,7 +238,7 @@ body {
     const isLoggedIn = localStorage.getItem('tbdits_logged_in');
     if (isLoggedIn !== 'true') {
       // Redirect to login page if not logged in
-      window.location.href = "index.html";  // অথবা তোমার login পেজের নাম
+      window.location.href = "https://www-tbdits.github.io/clouderp.tbdits.com/";  // অথবা তোমার login পেজের নাম
     }
   };
 
@@ -248,7 +248,7 @@ body {
     localStorage.removeItem('tbdits_user');
 
     // Redirect to login page after logout
-    window.location.href = 'index.html';  // তোমার login পেজের নাম
+    window.location.href = 'https://www-tbdits.github.io/clouderp.tbdits.com/';  // তোমার login পেজের নাম
   });
 
   // Prevent back button from going to protected page after logout
@@ -257,7 +257,7 @@ body {
     window.history.pushState(null, '', window.location.href);
     const isLoggedIn = localStorage.getItem('tbdits_logged_in');
     if (isLoggedIn !== 'true') {
-      window.location.href = 'index.html';  // তোমার login পেজের নাম
+      window.location.href = 'https://www-tbdits.github.io/clouderp.tbdits.com/';  // তোমার login পেজের নাম
     }
   };
 </script>
@@ -392,16 +392,17 @@ body {
     </div>
 
 <!--  ✅⤵🔰Summary Section  ✅⤵🔰-->
+
 <div id="summary-section">
 
   <div class="summary-row">
     <label>Total Qty:</label>
-    <div id="totalQty" class="value-box">0</div>
+    <div id="totalQty" class="value-box small">0</div>
   </div>
 
   <div class="summary-row">
     <label>Total:</label>
-    <div id="totalAmount" class="value-box">0.00</div>
+    <div id="totalAmount" class="value-box small">0.00</div>
   </div>
 
   <div class="summary-row">
@@ -410,13 +411,18 @@ body {
   </div>
 
   <div class="summary-row">
+    <label>VAT Amount:</label>
+    <div id="vatAmount" class="value-box small">0.00</div>
+  </div>
+
+  <div class="summary-row">
     <label for="discountPercent">Discount (%):</label>
     <input type="number" id="discountPercent" min="0" max="100" step="0.01" value="0" />
   </div>
 
   <div class="summary-row">
-    <label>Discount:</label>
-    <div id="discountAmount" class="value-box">0.00</div>
+    <label>Discount Amount:</label>
+    <div id="discountAmount" class="value-box small">0.00</div>
   </div>
 
   <div class="summary-row">
@@ -424,17 +430,36 @@ body {
     <div id="SubTotal" class="value-box total">0.00</div>
   </div>
 
-<!--  ✅⤵🔰Print Button ✅⤵🔰 -->
-<div style="text-align: center; margin-top: 10px;">
-  <button onclick="window.print()" style="
-    background: #2980b9;
-    color: white;
-    padding: 8px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-  "> Print Invoice</button>
+  <div style="text-align: center; margin-top: 10px;">
+    <button onclick="window.print()" style="
+      background: #2980b9;
+      color: white;
+      padding: 8px10px;
+      border: none;
+      border-radius: 4px;
+      font-size: 18px;
+      cursor: pointer;
+    ">Print Invoice</button>
+  </div>
+</div>
+
+<style>
+  /* ছোট করে দেওয়া value-box */
+  .value-box.small {
+    font-size: 12px;
+    padding: 3px 5px;
+    min-width: 60px;
+  }
+
+  /* summary-section h3 */
+  #summary-section h3 {
+    margin-bottom: 15px;
+    text-align: center;
+    font-weight: 600;
+    color: #27ae60;
+  }
+</style>
+
 </div>
 </div>
 </div>
@@ -444,6 +469,7 @@ body {
   const itemBarcodeInput = document.getElementById('itemBarcode');
   const salePriceInput = document.getElementById('salePrice');
   const saleQtyInput = document.getElementById('saleQty');
+  const invoiceNumberInput = document.getElementById('invoiceNumber');
   const productTableBody = document.querySelector('#productTable tbody');
 
   const totalQtyElem = document.getElementById('totalQty');
@@ -452,7 +478,16 @@ body {
   const discountAmountElem = document.getElementById('discountAmount');
   const subTotalElem = document.getElementById('SubTotal');
 
-  // Update Summary: Qty, Amount
+  // ✅ Auto-generate Invoice Number (Random + Timestamp)
+  function generateInvoiceNumber() {
+    const now = new Date();
+    const random = Math.floor(100 + Math.random() * 900); 
+    const inv = `#INV-TBIS-24-${now.getFullYear()}${now.getMonth()}`;
+    invoiceNumberInput.value = inv;
+  }
+  generateInvoiceNumber(); // Run on page load
+
+  // ✅ Update Summary: Qty, Amount
   function updateSummary() {
     let totalQty = 0;
     let totalAmount = 0;
@@ -466,15 +501,13 @@ body {
 
     totalQtyElem.textContent = totalQty;
     totalAmountElem.textContent = totalAmount.toFixed(2);
-
     updateDiscountAndSubTotal();
   }
 
-  // Update Discount and Subtotal
+  // ✅ Update Discount and Subtotal
   function updateDiscountAndSubTotal() {
     const total = parseFloat(totalAmountElem.textContent) || 0;
     const discountPercent = parseFloat(discountPercentInput.value) || 0;
-
     const discountAmount = (total * discountPercent) / 100;
     const subTotal = total - discountAmount;
 
@@ -482,7 +515,7 @@ body {
     subTotalElem.textContent = subTotal.toFixed(2);
   }
 
-  // Delete row
+  // ✅ Delete row
   function deleteRow(event) {
     const btn = event.target;
     const row = btn.closest('tr');
@@ -490,28 +523,35 @@ body {
     updateSummary();
   }
 
-  // Listen for Enter key
-  [itemBarcodeInput, salePriceInput, saleQtyInput].forEach(input => {
-    input.addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') {
-        e.preventDefault();
+  // ✅ Keyboard navigation & double Enter on quantity
+  itemBarcodeInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      salePriceInput.focus();
+    }
+  });
+
+  salePriceInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      saleQtyInput.focus();
+    }
+  });
+
+  let qtyEnterCount = 0;
+  saleQtyInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      qtyEnterCount++;
+
+      if (qtyEnterCount === 2) {
+        qtyEnterCount = 0;
 
         const description = itemBarcodeInput.value.trim();
         const rate = parseFloat(salePriceInput.value);
         const qty = parseInt(saleQtyInput.value);
 
-        if (!description) {
-          alert('Please enter Item / Barcode');
-          return;
-        }
-        if (isNaN(rate) || rate < 0) {
-          alert('Please enter valid Sale Price');
-          return;
-        }
-        if (isNaN(qty) || qty < 1) {
-          alert('Please enter valid Sale Quantity');
-          return;
-        }
+        if (!description || isNaN(rate) || isNaN(qty) || qty < 1) return;
 
         const amount = rate * qty;
         const tr = document.createElement('tr');
@@ -525,7 +565,6 @@ body {
           <td class="amount">${amount.toFixed(2)}</td>
           <td><button class="delete-btn">Delete</button></td>
         `;
-
         productTableBody.appendChild(tr);
         tr.querySelector('.delete-btn').addEventListener('click', deleteRow);
 
@@ -536,12 +575,61 @@ body {
 
         updateSummary();
       }
-    });
+    } else {
+      qtyEnterCount = 0; // reset if any other key
+    }
   });
 
-  // Update discount/subtotal on input change
+  // ✅ Update discount/subtotal on input change
   discountPercentInput.addEventListener('input', updateDiscountAndSubTotal);
 </script>
+<script>
+  // 👉 Enter press: Summary Fields (VAT, Discount %)
+  document.getElementById('vatInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('discountPercent').focus();
+    }
+  });
+
+  document.getElementById('discountPercent').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Optional: Go to Customer ID field or anything else
+      document.getElementById('customerId').focus();
+    }
+  });
+
+  // 👉 Enter press: Customer Info Fields (chain focus)
+  document.getElementById('customerId').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('customerMobile').focus();
+    }
+  });
+
+  document.getElementById('customerMobile').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('customerName').focus();
+    }
+  });
+
+  document.getElementById('customerName').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('customerAddress').focus();
+    }
+  });
+
+  document.getElementById('customerAddress').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      document.getElementById('itemBarcode').focus(); // goes back to item input
+    }
+  });
+</script>
+
 
 <!-- 🔻 Simple One-Line Footer 🔻 -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -562,7 +650,6 @@ body {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
-
 
 
 
