@@ -221,15 +221,31 @@ body {
     <img src="images/PosLogo.png" alt=" " style="height: 100px;">
   </div>
 
-  <!--  ✅⤵🔰Company Info ✅⤵🔰 -->
+  
+ <!--  ✅⤵🔰Company Info ✅⤵🔰 -->
   <div>
     <h2>Tech BD IT Solutions</h2>
     <p>Phone: +8809638665205, +8801516-573873, +8801323056735</p>
     <p>Address: Bangladesh, Dhaka-1205</p>
+
+    
+  <!--  ✅⤵🔰LogoutBth ✅⤵🔰 -->
+<button id="logoutBtn" style="background-color: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 1px; cursor: pointer;">
+  Logout
+</button>
+
+<script>
+document.getElementById('logoutBtn')?.addEventListener('click', () => {
+  localStorage.removeItem('tbdits_logged_in');
+  localStorage.removeItem('tbdits_user');
+  window.location.href = 'login.html';
+});
+</script>
+
   </div>
 </div>
 
-
+  
   <!--  ✅⤵🔰Right side: Invoice entry ✅⤵🔰 -->
 
 <div id="invoice-entry">
@@ -525,28 +541,6 @@ body {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
-
-
-<!-- invoice.html (head or top of body) -->
-<script>
-window.addEventListener('DOMContentLoaded', () => {
-  const isLogged = localStorage.getItem('tbdits_logged_in');
-  if (!isLogged) {
-    // Not logged in -> redirect to login page
-    window.location.href = 'login.html';
-  }
-});
-</script>
-<button id="logoutBtn">Logout</button>
-
-<script>
-document.getElementById('logoutBtn')?.addEventListener('click', () => {
-  localStorage.removeItem('tbdits_logged_in');
-  localStorage.removeItem('tbdits_user');
-  window.location.href = 'login.html';
-});
-</script>
-
 
 
 
