@@ -19,28 +19,39 @@ body {
     padding-bottom:10px;
     margin-bottom: 30px;
   }
-  /*  ✅⤵🔰Left: Company info  ✅⤵🔰*/
+   /*  ✅⤵🔰Left: Company info  ✅⤵🔰*/
 
   #company-login {
-    flex: 1 1 450px;
-    max-width: 450px;
-    font-weight: 600;
-  }
-  #company-login h2 {
-    font-size: 27px;
-    margin-bottom: 10px;
-    color: #00080;
-  }
-  #company-login p {
-    margin:0px 0;
-    font-size: 12px;
-  }
-  #company-login .login-id {
-    margin-top: 25px;
-    font-weight: 700;
-    font-size: 20px;
-    color: #FF0000;
-  }
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-family: 'Times New Roman', Arial, sans-serif;
+  white-space: nowrap;
+}
+
+#company-login h2 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0B3861; /* Dark blue tone */
+  margin: 0 0 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+#company-login .address {
+  font-size: 18px;
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 6px;
+}
+
+#company-login .contacts {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2980b9;
+}
+
 /* ✅⤵🔰 Invoice Entry aligned right with label on left side  ✅⤵🔰*/
 
 #invoice-entry {
@@ -651,6 +662,7 @@ body {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
