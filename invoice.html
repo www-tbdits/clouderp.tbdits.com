@@ -232,28 +232,20 @@ body {
   Logout
 </button>
 <body>
-<script>
-  window.onload = () => {
+  <body>
+  <script>
     const isLoggedIn = localStorage.getItem('tbdits_logged_in');
     if (isLoggedIn !== 'true') {
-      window.location.href = 'login.html';
+      window.location.href = "index.html"; // অথবা তোমার index.html
     }
-  };
+  </script>
 
-  window.history.pushState(null, '', window.location.href);
-  window.onpopstate = function () {
-    window.history.pushState(null, '', window.location.href);
-    const isLoggedIn = localStorage.getItem('tbdits_logged_in');
-    if (isLoggedIn !== 'true') {
-      window.location.href = 'login.html';
-    }
-  };
-</script>
+  <!-- এরপর শুরু হবে তোমার বাকি HTML -->
 
 document.getElementById('logoutBtn')?.addEventListener('click', () => {
   localStorage.removeItem('tbdits_logged_in');
   localStorage.removeItem('tbdits_user');
-  window.location.href = 'https://www-tbdits.github.io/clouderp.tbdits.com/';  // ekhane 'login.html' er jaygay 'index.html'
+  window.location.href = 'index.html';  // ekhane jaygay 'index.html'
 });
 </script>
 <script>
@@ -262,7 +254,7 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => {
 
   if (isLoggedIn !== 'true') {
     // Not logged in → redirect to login page
-    window.location.href = "login.html"; // অথবা index.html যেখানে তোমার লগইন ফর্ম আছে
+    window.location.href = "index.html"; // অথবা index.html যেখানে তোমার লগইন ফর্ম আছে
   }
 </script>
 
@@ -565,4 +557,5 @@ document.getElementById('logoutBtn')?.addEventListener('click', () => {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
