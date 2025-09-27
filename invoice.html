@@ -11,6 +11,10 @@ body {
   background: #2980b; 
   color: #2c3e50;
 }
+html, body {
+  height: 100%;
+  overflow: hidden; /* এটা যোগ করো */
+}
 
   #header-section {
     display: flex;
@@ -19,7 +23,7 @@ body {
     padding-bottom:10px;
     margin-bottom: 30px;
   }
-   /*  ✅⤵🔰Left: Company info  ✅⤵🔰*/
+  /*  ✅⤵🔰Left: Company info  ✅⤵🔰*/
 
   #company-login {
   flex: 1 1 auto;
@@ -170,6 +174,65 @@ body {
   margin-bottom: 20px;
   text-align: center;
 }
+footer {
+  position: fixed;
+  bottom: 0;
+  left: 15px; /* বাম থেকে ২০ পিক্সেল দূরে */
+  width: calc(100% - 40px); /* দুই পাশে মের্জিন রাখার জন্য */
+  background: #eee;
+  padding: 15px 20px;
+  border-top: 1px solid #ccc;
+  box-sizing: border-box;
+  z-index: 1000;
+  border-radius: 0px; /* চাইলে একটু rounded corner */
+}
+
+/* 🟩 Updated product-table-section with border like invoice box */
+#product-table-section {
+  flex: 1 1 500px;           /* ফ্লেক্স বেসিস এবং গ্রোউথ সেট */
+  background-color: #fff;    /* হোয়াইট ব্যাকগ্রাউন্ড */
+  padding: 0px;              /* প্যাডিং */
+  border-radius: 10;          /* কোন রাউন্ডেড কর্নার নেই */
+  border: 1px solid #000;    /* কালো বর্ডার */
+  max-height: 340px;         /* ম্যাক্সিমাম হাইট ৪০০px */
+  overflow-y: auto;          /* ভার্টিক্যাল স্ক্রল */
+  position: relative;        /* পজিশন রিলেটিভ */
+}
+
+  #product-table-section thead th {
+    position: sticky;
+    top: 0;
+    background-color: #2980b9;
+    color: white;
+    z-index: 1;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  table th, table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+
+
+/* 🔹 Scroll Button Style */
+#scrollButton {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  z-index: 5;
+  background: #1abc9c;
+  color: white;
+  padding: 2px 4px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
 /*  ✅⤵🔰Label + value field inline like input ✅⤵🔰 */
 
@@ -235,8 +298,8 @@ body {
   <!--  ✅⤵🔰Company Info ✅⤵🔰 -->
   <div>
     <h2>TECH BD IT SOLUTIONS </h2>
-    <p> Dhaka 1205, Bangladesh</p>
-   <p>+8809638665205 | +8801516-573873 +8801323056735</p>
+    <p>- Dhaka 1205, Bangladesh</p>
+   <p>+8809638665205 | +8801516-573873 |+8801323056735</p>
     
 
 <!--  ✅⤵🔰LogoutBtn ✅⤵🔰 -->
@@ -310,6 +373,7 @@ body {
 </div>
 
   <style>
+
   /*  ✅⤵🔰Container styling ✅⤵🔰 */
   #customer-info {
     max-width: 100%;
@@ -383,9 +447,7 @@ body {
   <!-- ✅⤵🔰 Container for Products and Summary side by side ✅⤵🔰 -->
 
   <div id="products-summary">
-    <!-- Products Table -->
-    <div id="product-table-section">
-  
+<!-- Products Table --> <div id="product-table-section">
       <table id="productTable">
         <thead>
           <tr>
@@ -477,6 +539,38 @@ body {
 </div>
 
 <script>
+// 🔸 Scroll to bottom of product table
+function scrollToBottom() {
+  const section = document.getElementById('product-table-section');
+  section.scrollTop = section.scrollHeight;
+}
+
+
+
+// ✅ Update inside add-row function
+function addRowToTable(description, rate, qty) {
+  const amount = rate * qty;
+  const tr = document.createElement('tr');
+  const slNo = productTableBody.children.length + 1;
+
+  tr.innerHTML = `
+    <td>${slNo}</td>
+    <td class="description">${description}</td>
+    <td class="qty">${qty}</td>
+    <td class="rate">${rate.toFixed(2)}</td>
+    <td class="amount">${amount.toFixed(2)}</td>
+    <td><button class="delete-btn">Delete</button></td>
+  `;
+  productTableBody.appendChild(tr);
+  tr.querySelector('.delete-btn').addEventListener('click', function (e) {
+    deleteRow(e);
+    updateRowCount(); // ✅ Update count after delete
+  });
+
+  updateSummary();
+  updateRowCount(); // ✅ Update count after add
+}
+
   // Get references
   const itemBarcodeInput = document.getElementById('itemBarcode');
   const salePriceInput = document.getElementById('salePrice');
@@ -662,12 +756,5 @@ body {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
-
-
-
-
-
-
-
 
 
