@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>Login - Tech BD IT Solutions</title>
   <style>
-    /* Reset */
     * {
       margin: 0;
       padding: 0;
@@ -13,101 +12,85 @@
     html, body {
       height: 100%;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: url('images/cloud.jpg') no-repeat center center fixed;
-      background-size: cover;
+      background: #f0f4f8;
       display: flex;
       justify-content: center;
       align-items: center;
+      padding: 0 20px;
       color: #333;
     }
 
-    /* Login container with white/light background */
     .login-container {
       background: #fff;
       border-radius: 12px;
-      padding: 40px 50px;
-      width: 360px;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      padding: 20px 25px;
+      width: 280px; /* ✅ আরও ক্যাপানো */
+      box-shadow: 0 6px 15px rgba(0,0,0,0.15);
       text-align: center;
       position: relative;
-      z-index: 1;
     }
 
     .logo {
-      margin-bottom:40px;
+      margin-bottom: 20px;
     }
     .logo img {
-      width: 200px;
-      border-radius: 10px;
-      box-shadow: none;
+      width: 100px;
+      border-radius: 8px;
     }
 
     h2 {
-      margin-bottom: 25px;
-      font-weight: 700;
-      font-size: 28px;
+      margin-bottom: 20px;
+      font-weight: 600;
+      font-size: 18px;
       color: #0B3861;
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      gap: 14px;
     }
 
     input[type="text"], input[type="password"] {
-      padding: 14px 18px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1.8px solid #0B3861;
-      outline: none;
+      padding: 10px 14px;
+      font-size: 14px;
+      border-radius: 30px;
+      border: 1.5px solid #0B3861;
       background: #f8f9fa;
-      color: #0B3861;
-      transition: border-color 0.3s ease;
-    }
-    input[type="text"]:focus, input[type="password"]:focus {
-      border-color: #2c5ca9;
-      background: #ffffff;
-      box-shadow: 0 0 8px #2c5ca9;
       color: #0B3861;
     }
 
     button {
-      padding: 14px;
-      font-size: 18px;
-      font-weight: 700;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
       color: #fff;
       background: linear-gradient(135deg, #0B3861, #2c5ca9);
       border: none;
-      border-radius: 14px;
+      border-radius: 30px;
       cursor: pointer;
-      box-shadow: 0 4px 12px rgba(11, 56, 97, 0.7);
-      transition: background 0.3s ease, box-shadow 0.3s ease;
+      transition: 0.3s ease;
     }
+
     button:hover {
       background: linear-gradient(135deg, #2c5ca9, #0B3861);
-      box-shadow: 0 6px 16px rgba(44, 92, 169, 0.9);
     }
 
     .footer-text {
-      margin-top: 35px;
-      font-size: 14px;
+      margin-top: 25px;
+      font-size: 13px;
       color: #0B3861;
-      user-select: none;
-      line-height: 1.4;
       font-weight: 600;
+      line-height: 1.4;
     }
+
     .footer-text strong {
-      color:  #2c5ca9;
+      color: #2c5ca9;
     }
 
     @media (max-width: 400px) {
       .login-container {
         width: 90%;
-        padding: 30px 20px;
-      }
-      .logo img {
-        width: 100px;
       }
     }
   </style>
@@ -115,15 +98,14 @@
 <body>
   <div class="login-container" role="main" aria-label="Login Form">
     <div class="logo">
-      <!-- নিজের লোগো দিতে এখানে URL বসান -->
       <img src="images/PosLogo.png" alt=" " />
     </div>
 
-    <h2>Cloud POS by Tech bd it solutions </h2>
+    <h2>Cloud POS by Tech BD IT Solutions</h2>
 
     <form id="login-form" onsubmit="return handleLogin(event)">
-      <input type="text" id="username" name="username" placeholder="Username" required autocomplete="username" />
-      <input type="password" id="password" name="password" placeholder="Password" required autocomplete="current-password" />
+      <input type="text" id="username" name="username" placeholder="Username" required />
+      <input type="password" id="password" name="password" placeholder="Password" required />
       <button type="submit">Login</button>
     </form>
 
@@ -133,42 +115,32 @@
     </div>
   </div>
 
- <script>
-  // ✅ Define allowed users (username + password)
-  const users = [
-    { username: 'jems', password: '6735' },
-    { username: 'nusrat', password: '6411' },
-    { username: '-------', password: '-----' },
-    { username: '-------', password: '-----'  }
-  ];
+  <script>
+    const users = [
+      { username: 'jems', password: '6735' },
+      { username: 'nusrat', password: '6411' },
+      { username: '-------', password: '-----' },
+      { username: '-------', password: '-----' }
+    ];
 
-  // ✅ Handle login
-  function handleLogin(e) {
-    e.preventDefault();
-    const username = document.getElementById('username').value.trim();
-    const password = document.getElementById('password').value.trim();
+    function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
 
-    // ✅ Check if user exists
-    const matchedUser = users.find(user => user.username === username && user.password === password);
+      const matchedUser = users.find(user => user.username === username && user.password === password);
 
-    if (matchedUser) {
-      alert("Login Successful! Redirecting to Billing Page...");
-      localStorage.setItem('tbdits_logged_in', 'true');
-      localStorage.setItem('tbdits_user', username); // Optional: store username
-      window.location.href = "invoice.html";  // আপনার বিলিং পেজের নাম
-    } else {
-      alert("Invalid username or password!");
+      if (matchedUser) {
+        alert("Login Successful! Redirecting to Billing Page...");
+        localStorage.setItem('tbdits_logged_in', 'true');
+        localStorage.setItem('tbdits_user', username);
+        window.location.href = "invoice.html";
+      } else {
+        alert("Invalid username or password!");
+      }
+
+      return false;
     }
-
-    return false;
-  }
-</script>
-
+  </script>
 </body>
 </html>
-
-
-
-
-
-
