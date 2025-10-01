@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Invoice Print</title>
+  <style>
+    @page {
+      size: A4 portrait; /* আপনি চাইলে landscape বা custom size দিতে পারবেন */
+      margin: 20mm 15mm 20mm 15mm;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+    .container {
+      width: 100%;
+      padding: 15px;
+      box-sizing: border-box;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #2980b9;
+      padding-bottom: 10px;
+      margin-bottom: 15px;
+    }
+    .invoice-info {
+      flex: 1;
+    }
+    .invoice-info h1 {
+      font-size: 30px;
+      color: #2980b9;
+      margin: 0;
+    }
+    .invoice-info p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+    .company-info {
+      text-align: right;
+    }
+    .company-info img {
+      height: 60px;
+    }
+    .company-info h2 {
+      margin: 5px 0 0;
+      font-size: 20px;
+      color: #2c3e50;
+    }
+    .bold-title {
+      font-weight: bold;
+      margin-top: 10px;
+      font-size: 16px;
+      border-left: 4px solid #2980b9;
+      padding-left: 10px;
+    }
+    .customer-info {
+      margin-top: 8px;
+      margin-bottom: 15px;
+    }
+    .customer-info p {
+      margin: 3px 0;
+      font-size: 14px;
+    }
+    .payment-info {
+      position: absolute;
+      right: 15px;
+      top: 120px;
+      text-align: right;
+    }
+    .payment-info h3 {
+      margin: 0 0 5px;
+      color: #2980b9;
+    }
+    .payment-info p {
+      margin: 2px 0;
+      font-size: 14px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 6px;
+      text-align: center;
+      font-size: 14px;
+    }
+    th {
+      background-color: #2980b9;
+      color: white;
+    }
+    .summary {
+      margin-top: 15px;
+      width: 100%;
+      max-width: 300px;
+      float: right;
+      border: none;
+    }
+    .summary tr td {
+      text-align: right;
+      padding: 4px;
+      font-size: 14px;
+    }
+    .signature-box {
+      margin-top: 40px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .signature-box .sig {
+      width: 45%;
+      border-top: 1px solid #000;
+      text-align: center;
+      padding-top: 5px;
+      font-size: 14px;
+    }
+    .barcode {
+      margin-top: 10px;
+      text-align: left;
+    }
+    .barcode img {
+      height: 50px;
+    }
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 10px 0;
+      background: #2c3e50;
+      color: white;
+      font-size: 14px;
+      text-align: center;
+      border-top: 2px solid #27ae60;
+    }
+    @media print {
+      .payment-info {
+        position: absolute;
+        right: 15px;
+        top: 110px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="print-area">
+    <header>
+      <div class="invoice-info">
+        <h1>INVOICE</h1>
+        <p id="invoiceNumber">Invoice No: #</p>
+        <p id="printDate">Date: </p>
+      </div>
+      <div class="company-info">
+        <img src="images/PosLogo.png" alt="Logo" />
+        <h2>TECH BD IT SOLUTIONS</h2>
+      </div>
+    </header>
+
+    <div class="bold-title">INVOICE TO</div>
+    <div class="customer-info">
+      <p><strong>Name:</strong> <span id="customerNamePrint"></span></p>
+      <p><strong>Address:</strong> <span id="customerAddressPrint"></span></p>
+      <p><strong>Mobile:</strong> <span id="customerMobilePrint"></span></p>
+    </div>
+
+    <div class="payment-info">
+      <h3>Payment Information</h3>
+      <p>Tech BD IT Solutions</p>
+      <p>Md. Jems Ahmed Joy</p>
+      <p>Cash</p>
+    </div>
+
+    <div class="barcode" id="barcodeDiv">
+      <!-- Barcode image will go here -->
+    </div>
+
+    <table id="productTablePrint">
+      <thead>
+        <tr>
+          <th>SL.NO</th>
+          <th>DESCRIPTION</th>
+          <th>QNT</th>
+          <th>RATE</th>
+          <th>AMOUNT</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Product rows will be injected -->
+      </tbody>
+    </table>
+
+    <table class="summary">
+      <tr><td>Total Qty:</td><td id="totalQtyPrint">0</td></tr>
+      <tr><td>Total Amount:</td><td id="totalAmountPrint">0.00</td></tr>
+      <tr><td>VAT:</td><td id="vatAmountPrint">0.00</td></tr>
+      <tr><td>Discount:</td><td id="discountAmountPrint">0.00</td></tr>
+      <tr><td><strong>Sub Total:</strong></td><td id="subTotalPrint"><strong>0.00</strong></td></tr>
+    </table>
+
+    <div class="signature-box">
+      <div class="sig">Customer Signature</div>
+      <div class="sig">Authorized Signature</div>
+    </div>
+  </div>
+
+  <footer>
+    Tech BD IT Solutions | www-tbdits.github.io/techbditsolutions.com | +8809638665205 | Dhaka 1205
+  </footer>
+
+  <!-- include barcode generator library (JsBarcode) -->
+  <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+  <!-- include html2pdf library for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <script>
+    window.onload = function() {
+      const openerDoc = window.opener.document;
+
+      // Invoice info
+      document.getElementById('invoiceNumber').textContent =
+        "Invoice No: " + openerDoc.getElementById('invoiceNumber').value;
+
+      const now = new Date();
+      document.getElementById('printDate').textContent =
+        "Date: " + now.toLocaleDateString() + " " + now.toLocaleTimeString();
+
+      // Customer info
+      document.getElementById('customerNamePrint').textContent =
+        openerDoc.getElementById('customerName').value;
+      document.getElementById('customerAddressPrint').textContent =
+        openerDoc.getElementById('customerAddress').value;
+      document.getElementById('customerMobilePrint').textContent =
+        openerDoc.getElementById('customerMobile').value;
+
+      // Barcode: use invoice number for barcode
+      const barcodeDiv = document.getElementById('barcodeDiv');
+      const barcodeSvg = document.createElement('svg');
+      JsBarcode(barcodeSvg, openerDoc.getElementById('invoiceNumber').value, {
+        format: "CODE128", width: 2, height: 40, displayValue: true
+      });
+      barcodeDiv.appendChild(barcodeSvg);
+
+      // Copy product table rows
+      const productRows = openerDoc.querySelectorAll('#productTable tbody tr');
+      const tbody = document.querySelector('#productTablePrint tbody');
+      productRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${cells[0].textContent}</td>
+          <td>${cells[1].textContent}</td>
+          <td>${cells[2].textContent}</td>
+          <td>${cells[3].textContent}</td>
+          <td>${cells[4].textContent}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      // Summary
+      document.getElementById('totalQtyPrint').textContent =
+        openerDoc.getElementById('totalQty').textContent;
+      document.getElementById('totalAmountPrint').textContent =
+        openerDoc.getElementById('totalAmount').textContent;
+      document.getElementById('vatAmountPrint').textContent =
+        openerDoc.getElementById('vatAmount').textContent;
+      document.getElementById('discountAmountPrint').textContent =
+        openerDoc.getElementById('discountAmount').textContent;
+      document.getElementById('subTotalPrint').textContent =
+        openerDoc.getElementById('SubTotal').textContent;
+
+      // Delay a bit then print
+      setTimeout(() => {
+        // Trigger print dialog
+        window.print();
+        // Optionally you can auto-close the window after print
+        // window.close();
+      }, 500);
+    };
+
+    // PDF export function (call manually if need)
+    function exportToPDF() {
+      const element = document.getElementById('print-area');
+      const opt = {
+        margin:       0.5, 
+        filename:     document.getElementById('invoiceNumber').textContent + '.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+  </script>
+</body>
+</html>
