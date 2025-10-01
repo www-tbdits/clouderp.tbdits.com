@@ -507,8 +507,10 @@ footer {
     <div id="SubTotal" class="value-box total">0.00</div>
   </div>
 
-  <div style="text-align: center; margin-top: 10px;">
-  <button onclick="window.print()" style="
+
+<!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
+
+<button onclick="openPaymentPopup()" style="
     background: #2980b9;
     color: white;
     padding: 8px 14px;
@@ -519,7 +521,273 @@ footer {
     margin-right: 10px;
   ">Print Invoice</button>
 
-  <button onclick="reprintInvoice()" style="
+<script>
+  // ✅ ধরো তোমার ইনভয়েসের হিসাব এখানে করা হয়েছে
+  const invoiceData = {
+    invoiceNumber: '001',
+    items: [
+      { name: 'Product A', qty: 2, price: 100 },
+      { name: 'Product B', qty: 1, price: 150 }
+    ]
+  };
+
+  // ✅ মোট এমাউন্ট ক্যালকুলেট
+  function calculateTotal(items) {
+    return items.reduce((total, item) => total + (item.qty * item.price), 0);
+  }
+
+function openPaymentPopup() {
+  const width = 580;
+  const height =520; // Reduced from 500 to 420 to avoid scroll
+  const left = (screen.width / 2) - (width / 2);
+  const top = (screen.height / 2) - (height / 2);
+  const options = `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`;
+
+  const totalAmount = document.getElementById('SubTotal')?.textContent.trim() || '0.00';
+
+  const paymentOptions = [
+    'Cash', 'Bikash', 'Nagod', 'Rocket', 'Card',
+    'Dutch-Bangla Bank', 'BRAC Bank', 'Islami Bank', 'City Bank', 'Standard Chartered Bank'
+  ];
+
+  let optionsHtml = paymentOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('');
+
+  // ...rest of the function remains unchanged
+
+  const popupContent = `
+    <html>
+      <head>
+        <title>Payment Method</title>
+        <style>
+          body {
+            font-family: 'Times New Roman', Times, serif;
+            padding: 30px;
+            text-align: center;
+            background: #f9f9f9;
+          }
+h3 {
+  font-family: 'Times New Roman', Times, serif;
+  font-size: 40px;
+  font-weight: 900;
+  color: #B22222; /* Strong dark red */
+  text-transform: uppercase;
+  margin-bottom: 25px;
+  letter-spacing: 1.5px;
+}
+          select, input {
+            width: 90%;
+            padding: 10px;
+            font-size: 25px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Times New Roman', Times, serif;
+          }
+          button {
+            background: #2c3e50;
+            color: white;
+            padding: 10px 25px;
+            border: none;
+            border-radius: 4px;
+            font-size: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-family: 'Times New Roman', Times, serif;
+          }
+          button:hover {
+            background: #34495e;
+          }
+          label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            text-align: left;
+            width: 90%;
+            margin: 10px auto 5px auto;
+            font-family: 'Times New Roman', Times, serif;
+          }
+        </style>
+      </head>
+      <body>
+        <h3>Payment Method</h3>
+
+        <p><strong>Invoice Amount:</strong> ৳${totalAmount}</p>
+
+        <label for="paymentSelect">Payment Type</label>
+        <select id="paymentSelect">
+          <option value="" disabled selected>-- Select Payment Method --</option>
+          ${optionsHtml}
+        </select>
+
+        <label for="cardNumber">Card Number</label>
+        <input type="text" id="cardNumber" placeholder="Enter card number" maxlength="20" />
+
+        <label for="manualAmount">Amount</label>
+        <input type="number" id="manualAmount" placeholder="Enter amount" min="0" />
+
+        <br/>
+        <button onclick="confirmPayment()">OK</button>
+
+        <script>
+          function confirmPayment() {
+            const payment = document.getElementById('paymentSelect').value;
+            const cardNumber = document.getElementById('cardNumber').value.trim();
+            const manualAmount = document.getElementById('manualAmount').value.trim();
+
+            if (!payment) {
+              alert('Please select a payment method!');
+              return;
+            }
+
+            window.opener.printInvoice(payment, cardNumber, manualAmount);
+            window.close();
+          }
+        <\/script>
+      </body>
+    </html>
+  `;
+  const popup = window.open('', '', options);
+  if (popup) {
+    popup.document.open();
+    popup.document.write(popupContent);
+    popup.document.close();
+  } else {
+    alert('Popup blocked! Please allow popups for this site.');
+  }
+}
+
+function printInvoice(paymentMethod, cardNumber, manualAmount) {
+  const width = 600;
+  const height = 700;
+  const left = (screen.width / 2) - (width / 2);
+  const top = (screen.height / 2) - (height / 2);
+  const options = `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`;
+
+  const totalAmount = calculateTotal(invoiceData.items);
+
+  const rows = invoiceData.items.map(item => `
+    <tr>
+      <td>${item.name}</td>
+      <td>${item.qty}</td>
+      <td>৳${item.price}</td>
+      <td>৳${item.qty * item.price}</td>
+    </tr>
+  `).join('');
+
+  const invoiceContent = `
+
+<!-- ✅⤵🔰InvoicePrint Section ✅⤵🔰 -->
+<!-- ✅⤵🔰InvoicePrint Section ✅⤵🔰 -->
+ <html>
+      <head>
+        <title>Invoice</title>
+        <style>
+          body {
+            font-family: 'Times New Roman', Times, serif;
+            padding: 20px;
+            background: white;
+          }
+          .invoice {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+          }
+          .invoice h2 {
+            text-align: center;
+            margin-bottom: 20px;
+          }
+          table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+          }
+          table, th, td {
+            border: 1px solid #333;
+          }
+          th, td {
+            padding: 8px;
+            text-align: left;
+          }
+          .details {
+            font-size: 16px;
+          }
+          .details p {
+            margin: 5px 0;
+          }
+          .thank-you {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 18px;
+          }
+          @media print {
+            @page {
+              size: auto;
+              margin: 10mm;
+            }
+            body {
+              margin: 0;
+              padding: 0;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="invoice">
+          <h2>INVOICE</h2>
+          <p><strong>Invoice No:</strong> ${invoiceData.invoiceNumber}</p>
+          <p><strong>Date:</strong> ${new Date().toISOString().split('T')[0]}</p>
+          <hr/>
+          <table>
+            <thead>
+              <tr>
+                <th>Item</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows}
+            </tbody>
+            <tfoot>
+              <tr>
+                <th colspan="3">Total</th>
+                <th>৳${totalAmount}</th>
+              </tr>
+            </tfoot>
+          </table>
+          <div class="details">
+            <p><strong>Payment Method:</strong> ${paymentMethod}</p>
+            ${cardNumber ? `<p><strong>Card Number:</strong> ${cardNumber}</p>` : ''}
+            ${manualAmount ? `<p><strong>Amount:</strong> ৳${manualAmount}</p>` : ''}
+          </div>
+          <div class="thank-you">Thank you for your purchase!</div>
+        </div>
+        <script>
+          window.onload = function() {
+            window.print();
+          }
+        <\/script>
+      </body>
+    </html>
+  `;
+
+  const printWindow = window.open('', '', options);
+  if (printWindow) {
+    printWindow.document.open();
+    printWindow.document.write(invoiceContent);
+    printWindow.document.close();
+  } else {
+    alert('Popup blocked! Please allow popups for this site.');
+  }
+}
+
+</script>
+
+<!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
+<button onclick="reprintInvoice()" style="
     background: #27ae60;
     color: white;
     padding: 8px 14px;
@@ -530,11 +798,8 @@ footer {
   ">Reprint</button>
 </div>
 
-  </div>
-</div>
-
 <style>
-  /* ছোট করে দেওয়া value-box */
+  /* ছোট করে দেওয়া value-box */
   .value-box.small {
     font-size: 12px;
     padding: 3px 5px;
@@ -550,14 +815,11 @@ footer {
   }
 </style>
 
-</div>
-</div>
-</div>
 <script>
   function reprintInvoice() {
     alert("Reprint feature is under development, or you can load last invoice from local storage.");
-    // ✅⤵🔰এখানে  future এ আগের invoice data localStorage থেকে load করে প্রিন্ট করতে পারো।
-    // বা backend থেকে এনে show করে প্রিন্ট করতে পারো।
+    // ভবিষ্যতে এখানে localStorage থেকে আগের ইনভয়েস ডেটা নিয়ে প্রিন্ট ফাংশন তৈরি করতে পারেন।
+    // অথবা ব্যাকএন্ড থেকে ডেটা নিয়ে এসে শো করিয়ে প্রিন্ট করতে পারেন।
   }
 </script>
 
@@ -779,4 +1041,5 @@ function addRowToTable(description, rate, qty) {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
