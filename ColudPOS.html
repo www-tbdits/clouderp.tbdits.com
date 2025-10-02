@@ -585,6 +585,7 @@ footer {
 
 
 <!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
+<!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
 
 <button onclick="openPaymentPopup()" style="
     background: #2980b9;
@@ -731,7 +732,6 @@ h3 {
     alert('Popup blocked! Please allow popups for this site.');
   }
 }
-
 function printInvoice(paymentMethod, cardNumber, manualAmount) {
   const width = 600;
   const height = 700;
@@ -739,9 +739,20 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
   const top = (screen.height / 2) - (height / 2);
   const options = `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`;
 
-  const totalAmount = calculateTotal(invoiceData.items);
+  const items = invoiceData.items;
 
-  const rows = invoiceData.items.map(item => `
+  const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
+  const total = calculateTotal(items);
+
+  const vatPercent = 5; // ✅ Change if needed
+  const vatAmount = (total * vatPercent) / 100;
+
+  const discountPercent = 10; // ✅ Change if needed
+  const discountAmount = (total * discountPercent) / 100;
+
+  const subTotal = total + vatAmount - discountAmount;
+
+  const rows = items.map(item => `
     <tr>
       <td>${item.name}</td>
       <td>${item.qty}</td>
@@ -1208,6 +1219,7 @@ function addRowToTable(description, rate, qty) {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
