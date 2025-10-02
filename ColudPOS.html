@@ -303,9 +303,85 @@ footer {
     
 
 <!--  ✅⤵🔰LogoutBtn ✅⤵🔰 -->
-<button id="logoutBtn" style="background-color: #e74c3c; color: white; border: none; padding: 4px 8px; border-radius: 1px; cursor: pointer;">
-  Logout
-</button>
+
+<!--  ✅⤵🔰LogoutBtn & Date&Time ✅⤵🔰 -->
+<button id="logoutBtn" style="
+  background-color: #e74c3c; 
+  color: white; 
+  border: none; 
+  padding: 4px 8px;  /* বড় padding */
+  border-radius:0px; /* হালকা গোল কোণা */
+  cursor: pointer;
+  font-family: monospace;
+  font-size: 14px;   /* একটু বড় ফন্ট */
+  font-weight: 500;
+">Logout</button>
+
+<span id="time" style="
+  margin-left: 15px; 
+  font-family: monospace; 
+  font-weight: ; 
+  font-size: 14px; 
+  color: white; 
+  background-color: green;  /* লাল ব্যাকগ্রাউন্ড */
+  padding: 4px 12px;
+  border-radius:5px;
+  display: inline-block;
+  min-width: 100px;
+  text-align: center;
+"></span>
+
+<span id="date" style="
+  margin-left: 5px; 
+  font-family: monospace; 
+  font-weight: ; 
+  font-size: 14px; 
+  color: white; 
+  background-color: #2980b9;  /* নীল ব্যাকগ্রাউন্ড */
+  padding: 4px 8px;
+  border-radius: 0px;
+  display: inline-block;
+  min-width: 100px;
+  text-align: center;
+"></span>
+
+<script>
+  function updateClockDate() {
+    const now = new Date();
+    const time = now.toLocaleTimeString('en-GB', { hour12: false }); // 24 ঘন্টার ফরম্যাট
+    const date = now.toLocaleDateString('en-GB'); // DD/MM/YYYY
+
+    document.getElementById('time').textContent = time;
+    document.getElementById('date').textContent = date;
+  }
+
+  setInterval(updateClockDate, 1000);
+  updateClockDate(); // পেজ লোডের সাথে সাথে আপডেট
+</script>
+
+<script>
+  function updateClockDate() {
+    const now = new Date();
+
+    let hours = now.getHours();
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    const seconds = now.getSeconds().toString().padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12;
+    hours = hours ? hours : 12; // 0 হলে 12 দেখাও
+
+    const time = `${hours}:${minutes}:${seconds} ${ampm}`;
+    const date = now.toLocaleDateString('en-GB'); // DD/MM/YYYY
+
+    document.getElementById('time').textContent = time;
+    document.getElementById('date').textContent = date;
+  }
+
+  setInterval(updateClockDate, 1000);
+  updateClockDate(); // পেজ লোডের সাথে সাথে আপডেট
+</script>
+
 
 <script>
   // Check if user is logged in on page load
@@ -1041,5 +1117,6 @@ function addRowToTable(description, rate, qty) {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
