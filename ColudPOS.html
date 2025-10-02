@@ -903,17 +903,32 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
     </table>
   </div>
 
-  <!-- Right side: Summary Block -->
+    <!-- Container: Flex layout -->
+<div style="display: flex; align-items: flex-start; gap: 20px; font-size: 12px; margin-top: 20px;">
+
+  <!-- Left Side: Payment Info + Remarks -->
+  <div style="flex: 1; max-width: 300px;">
+    <div class="details">
+      <p><strong>Payment Info:</strong> ${paymentMethod}</p>
+      ${cardNumber ? `<p><strong>Card Number:</strong> ${cardNumber}</p>` : ''}
+      ${manualAmount ? `<p><strong>Amount Paid:</strong> ৳${manualAmount}</p>` : ''}
+
+      <p style="margin-top: 8px; font-weight: bold; color: green;">
+        Payment received. Thank you for your purchase!
+      </p>
+    </div>
+
+    <div class="remarks" style="margin-top: 10px;">
+      <p><strong>Remarks:</strong> Thank you for being a valued customer!</p>
+    </div>
+  </div>
+
+  <!-- Right Side: Summary Block -->
   <div style="
     flex: 1;
-    max-width: 250px;
-    margin-left: auto;
+    max-width: 300px;
     text-align: right;
-    border: 0 px solid ;
-    padding: px;
-    border-radius: px;
-    background-color: ;
-    font-size: 10px;
+    font-size: 12px;
   ">
     <p><strong>Total Qty:</strong> ${totalQty}</p>
     <p><strong>Total:</strong> ৳${total.toFixed(2)}</p>
@@ -928,20 +943,6 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
     <p style="font-size: 17px;"><strong>Sub Total:</strong> ৳${subTotal.toFixed(2)}</p>
   </div>
 </div>
-
-
-          <div class="details">
-            <p><strong>Payment Method:</strong> ${paymentMethod}</p>
-            ${cardNumber ? `<p><strong>Card Number:</strong> ${cardNumber}</p>` : ''}
-            ${manualAmount ? `<p><strong>Amount Paid:</strong> ৳${manualAmount}</p>` : ''}
-          </div>
-
-          <div class="remarks">
-            <p><strong>Remarks:</strong> Thank you for being a valued customer!</p>
-          </div>
-
-          <div class="thank-you">Thank you for your purchase!</div>
-        </div>
 
         <script>
           window.onload = function() {
@@ -1219,6 +1220,7 @@ function addRowToTable(description, rate, qty) {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
