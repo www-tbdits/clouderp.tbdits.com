@@ -602,6 +602,9 @@ footer {
 <!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
 <!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
 
+<!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
+<!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
+
 <button onclick="openPaymentPopup()" style="
     background: #2980b9;
     color: white;
@@ -1027,9 +1030,9 @@ const rowsHTML = rowsData.map((r, index) => `
 }
 </script>
 
+<!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
+<!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
 
-<!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
-<!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
 <button onclick="reprintInvoice()" style="
     background: #27ae60;
     color: white;
@@ -1112,14 +1115,26 @@ function addRowToTable(description, rate, qty) {
   const discountAmountElem = document.getElementById('discountAmount');
   const subTotalElem = document.getElementById('SubTotal');
 
-  // ✅ Auto-generate Invoice Number (Random + Timestamp)
-  function generateInvoiceNumber() {
-    const now = new Date();
-    const random = Math.floor(100 + Math.random() * 900); 
-    const inv = `#INV-TBIS-24-${now.getFullYear()}${now.getMonth()}`;
-    invoiceNumberInput.value = inv;
-  }
-  generateInvoiceNumber(); // Run on page load
+<!--  ✅⤵🔰Auto-generate Invoice Number (Random + Timestamp  ✅⤵🔰-->
+<!--  ✅⤵🔰Auto-generate Invoice Number (Random + Timestamp  ✅⤵🔰-->
+
+function generateInvoiceNumber() {
+  const now = new Date();
+  const yearShort = String(now.getFullYear()).slice(-2); // last 2 digits of year
+  const month = String(now.getMonth() + 1).padStart(2, '0'); // current month 01-12
+  const invoiceNumberInput = document.getElementById('invoiceNumber');
+
+  // Custom Format: 24INV<YY>T BIS<MM>
+  const inv = `24TBI S${yearShort}${month}`;
+
+  invoiceNumberInput.value = inv;
+}
+
+// Run on page load
+generateInvoiceNumber();
+
+
+
 
   // ✅ Update Summary: Qty, Amount
   function updateSummary() {
@@ -1284,6 +1299,7 @@ function addRowToTable(description, rate, qty) {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
