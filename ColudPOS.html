@@ -515,9 +515,24 @@ footer {
       <label for="customerAddress">Address:</label>
       <input type="text" id="customerAddress" placeholder="" />
     </div>
- <div class="form-group-horizontal">
- <label for="remarks">Remarks:</label>
-    <textarea id="remarks" rows="2" placeholder="" style="width: 100%; padding: 0px 0px; font-size: 12px; border: 1px solid #000; border-radius: 4px; box-sizing: border-box;"></textarea>
+<!-- Remarks Input Box: Single Line Fixed -->
+<div class="form-group-horizontal" style="margin-top: 10px; font-family: Arial, sans-serif;">
+  <label for="remarks" style="display: block; font-weight: bold; margin-bottom: 3px;">Remarks:</label>
+  <textarea 
+    id="remarks" 
+    rows="1" 
+    placeholder=" " 
+    style="width: 100%; 
+           height: 25px; /* single line height */
+           padding: 4px; 
+           font-size: 12px; 
+           border: 1px solid #000; 
+           border-radius: 4px; 
+           box-sizing: border-box; 
+           resize: none; 
+           overflow: hidden;"> 
+  </textarea>
+</div>
   </div>
     </div>
   </div>
@@ -870,27 +885,145 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
   const top = (screen.height / 2) - (height / 2);
   const options = `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`;
 
-  const items = invoiceData.items;
+  // ✅ Invoice & Customer Info
+  const invoiceNumber = document.getElementById('invoiceNumber').value.trim() || 'N/A';
+  const customerName = document.getElementById('customerName').value.trim() || '';
+  const customerMobile = document.getElementById('customerMobile').value.trim() || '';
+  const customerAddress = document.getElementById('customerAddress').value.trim() || '';
 
-  const totalQty = items.reduce((sum, item) => sum + item.qty, 0);
-  const total = calculateTotal(items);
+  // ✅ Product Table Data
+  const rowsData = [];
+  const tableRows = document.querySelectorAll('#productTable tbody tr');
+  tableRows.forEach(row => {
+    const description = row.querySelector('.description').textContent;
+    const qty = row.querySelector('.qty').textContent;
+    const rate = row.querySelector('.rate').textContent;
+    const amount = row.querySelector('.amount').textContent;
+    rowsData.push({ description, qty, rate, amount });
+  });
 
-  const vatPercent = 5; // ✅ Change if needed
-  const vatAmount = (total * vatPercent) / 100;
-
-  const discountPercent = 10; // ✅ Change if needed
-  const discountAmount = (total * discountPercent) / 100;
-
-  const subTotal = total + vatAmount - discountAmount;
-
-  const rows = items.map(item => `
+  const rowsHTML = rowsData.map(r => `
     <tr>
-      <td>${item.name}</td>
-      <td>${item.qty}</td>
-      <td>৳${item.price}</td>
-      <td>৳${item.qty * item.price}</td>
+      <td>${r.description}</td>
+      <td>${r.qty}</td>
+      <td>৳${r.rate}</td>
+      <td>৳${r.amount}</td>
     </tr>
   `).join('');
+
+  // ✅ Summary Section Data
+  const totalQty = document.getElementById('totalQty').textContent;
+  const totalAmount = document.getElementById('totalAmount').textContent;
+  const vatPercent = document.getElementById('vatInput').value || 0;
+  const vatAmount = document.getElementById('vatAmount').textContent;
+  const discountPercent = document.getElementById('discountPercent').value || 0;
+  const discountAmount = document.getElementById('discountAmount').textContent;
+  const subTotal = document.getElementById('SubTotal').textContent;
+
+
+  // ✅ HTML Template for Print Popup
+  const invoiceContent = `
+    <html>
+      <head>
+        <title>Invoice</title>
+        <style>
+          body { font-family: 'Times New Roman', Times, serif; padding: 20px; }
+          .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+          .header img { height: 60px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+          table, th, td { border: 1px solid #333; }
+          th, td { padding: 6px; text-align: left; font-size: 14px; }
+          .summary { text-align: right; margin-top: 20px; font-size: 14px; }
+          .summary p { margin: 3px 0; }
+          .customer-info { margin-top: 10px; font-size: 14px; }
+        </style>
+      </head>
+      <body>
+        <!-- Header -->
+        <div class="header">
+          <div>
+            <p><strong>Invoice No:</strong> ${invoiceNumber}</p>
+            <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-GB')}</p>
+          </div>
+          <div>
+            <img src="images/PosLogo.png" alt="Logo">
+          </div>
+        </div>
+
+        <!-- Customer & Payment Info: Side by Side -->
+<div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px;">
+
+  <!-- Left: Customer Info -->
+  <div class="customer-info" style="flex: 1; min-width: 240px;">
+    <h3>INVOICE TO:</h3>
+    <p><strong>Name:</strong> ${customerName}</p>
+    <p><strong>Mobile:</strong> ${customerMobile}</p>
+    <p><strong>Address:</strong> ${customerAddress}</p>
+  </div>
+
+  <!-- Right: Payment Info -->
+  <div class="payment-info" style="flex: 1; min-width: 240px; text-align: right;">
+    <h3>PAYMENT INFORMATION</h3>
+    <p><strong> </strong> Mohammad Jems Ahmed Joy</p>
+    <p><strong> </strong> Tech BD IT Solutions</p>
+    <p><strong>Account:</strong> ${paymentMethod}</p>
+    ${cardNumber ? `<p><strong>Card Number:</strong> ${cardNumber}</p>` : ''}
+    ${manualAmount ? `<p><strong>Amount:</strong> ৳${manualAmount}</p>` : ''}
+  </div>
+
+</div>
+
+        <!-- Product Table -->
+        <table>
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Qty</th>
+              <th>Rate</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rowsHTML}
+          </tbody>
+        </table>
+
+        <!-- Summary Block -->
+        <div class="summary">
+          <p><strong>Total Qty:</strong> ${totalQty}</p>
+          <p><strong>Total:</strong> ৳${totalAmount}</p>
+          <p><strong>VAT (%):</strong> ${vatPercent}%</p>
+          <p><strong>VAT Amount:</strong> ৳${vatAmount}</p>
+          <p><strong>Discount (%):</strong> ${discountPercent}%</p>
+          <p><strong>Discount Amount:</strong> ৳${discountAmount}</p>
+          <hr>
+          <p style="font-size: 16px;"><strong>Sub Total:</strong> ৳${subTotal}</p>
+        </div>
+
+        <!-- Payment Info -->
+        <div style="margin-top: 20px; font-size: 14px;">
+          <p><strong>Payment Info:</strong> ${paymentMethod}</p>
+          ${cardNumber ? `<p><strong>Card Number:</strong> ${cardNumber}</p>` : ''}
+          ${manualAmount ? `<p><strong>Amount Paid:</strong> ৳${manualAmount}</p>` : ''}
+        </div>
+
+        <script>
+          window.onload = function() { window.print(); }
+        <\/script>
+      </body>
+    </html>
+  `;
+
+  const printWindow = window.open('', '', options);
+  if (printWindow) {
+    printWindow.document.open();
+    printWindow.document.write(invoiceContent);
+    printWindow.document.close();
+  } else {
+    alert('Popup blocked! Please allow popups for this site.');
+  }
+}
+</script>
 
 <!--  ✅⤵🔰Print Section  ✅⤵🔰-->
 <!--  ✅⤵🔰Print Section  ✅⤵🔰-->
@@ -1353,6 +1486,7 @@ function addRowToTable(description, rate, qty) {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
