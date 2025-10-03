@@ -612,10 +612,9 @@ footer {
   function calculateTotal(items) {
     return items.reduce((total, item) => total + (item.qty * item.price), 0);
   }
-
 function openPaymentPopup() {
-  const width = 580;
-  const height =520; // Reduced from 500 to 420 to avoid scroll
+ const width = 560;
+  const height = 480;
   const left = (screen.width / 2) - (width / 2);
   const top = (screen.height / 2) - (height / 2);
   const options = `width=${width},height=${height},top=${top},left=${left},resizable=no,scrollbars=no`;
@@ -627,13 +626,12 @@ function openPaymentPopup() {
     'Dutch-Bangla Bank', 'BRAC Bank', 'Islami Bank', 'City Bank', 'Standard Chartered Bank'
   ];
 
-  let optionsHtml = paymentOptions.map(opt => `<option value="${opt}">${opt}</option>`).join('');
-
-  // ...rest of the function remains unchanged
+  const optionsHtml = paymentOptions.map(opt => `<div class="option" data-value="${opt}">${opt}</div>`).join('');
 
   const popupContent = `
     <html>
       <head>
+        <meta charset="utf-8"/>
         <title>Payment Method</title>
         <style>
           body {
@@ -642,31 +640,92 @@ function openPaymentPopup() {
             text-align: center;
             background: #f9f9f9;
           }
-h3 {
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 40px;
-  font-weight: 900;
-  color: #B22222; /* Strong dark red */
-  text-transform: uppercase;
-  margin-bottom: 25px;
-  letter-spacing: 1.5px;
-}
-          select, input {
+          h3 {
+            font-family: 'Times New Roman', Times, serif;
+            font-size: 34px;
+            font-weight: 900;
+            color: #B22222;
+            text-transform: uppercase;
+            margin-bottom: 18px;
+            letter-spacing: 1px;
+          }
+          .label {
+            display: block;
+            text-align: left;
+            width: 90%;
+            margin: 10px auto 5px;
+            font-weight: bold;
+            font-family: 'Times New Roman', Times, serif;
+          }
+
+          .custom-select {
+            position: relative;
+            width: 90%;
+            margin: 0 auto 12px;
+            user-select: none;
+            font-size: 20px;
+          }
+          .select-trigger {
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 12px 14px;
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-family: 'Times New Roman', Times, serif;
+          }
+          .select-trigger .placeholder {
+            color: #666;
+          }
+          .select-arrow {
+            margin-left: 10px;
+            transition: transform .2s ease;
+          }
+          .custom-select.open .select-arrow {
+            transform: rotate(180deg);
+          }
+          .options {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: calc(100% + 6px);
+            background: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            max-height: 180px;
+            overflow-y: auto;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+            z-index: 9999;
+          }
+          .option {
+            padding: 10px 12px;
+            cursor: pointer;
+            text-align: left;
+          }
+          .option:hover {
+            background: #f0f0f0;
+          }
+
+          input[type="text"], input[type="number"] {
             width: 90%;
             padding: 10px;
-            font-size: 25px;
-            margin-bottom: 15px;
+            font-size: 20px;
+            margin-bottom: 12px;
             border: 1px solid #ccc;
             border-radius: 5px;
             font-family: 'Times New Roman', Times, serif;
           }
+
           button {
             background: #2c3e50;
             color: white;
             padding: 10px 25px;
             border: none;
             border-radius: 4px;
-            font-size: 25px;
+            font-size: 22px;
             cursor: pointer;
             transition: background 0.3s ease;
             font-family: 'Times New Roman', Times, serif;
@@ -674,40 +733,106 @@ h3 {
           button:hover {
             background: #34495e;
           }
-          label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            text-align: left;
-            width: 90%;
-            margin: 10px auto 5px auto;
-            font-family: 'Times New Roman', Times, serif;
+
+          p.amount {
+            font-size: 22px;
+            margin-bottom: 12px;
           }
         </style>
       </head>
       <body>
         <h3>Payment Method</h3>
 
-        <p><strong>Invoice Amount:</strong> ৳${totalAmount}</p>
+        <p class="amount"><strong>Invoice Amount:</strong> ৳${totalAmount}</p>
 
-        <label for="paymentSelect">Payment Type</label>
-        <select id="paymentSelect">
-          <option value="" disabled selected>-- Select Payment Method --</option>
-          ${optionsHtml}
-        </select>
+        <label class="label" for="paymentSelect">Payment Type</label>
 
-        <label for="cardNumber">Card Number</label>
+        <div class="custom-select" id="customSelect">
+          <div class="select-trigger" id="selectTrigger" tabindex="0" aria-haspopup="listbox" aria-expanded="false">
+            <span class="placeholder">-- Select Payment Method --</span>
+            <span class="select-arrow">▾</span>
+          </div>
+          <div class="options" id="optionsList" role="listbox" aria-hidden="true" style="display:none;">
+            ${optionsHtml}
+          </div>
+        </div>
+
+        <input type="hidden" id="paymentSelectValue" value="">
+
+        <label class="label" for="cardNumber">Card Number</label>
         <input type="text" id="cardNumber" placeholder="Enter card number" maxlength="20" />
 
-        <label for="manualAmount">Amount</label>
+        <label class="label" for="manualAmount">Amount</label>
         <input type="number" id="manualAmount" placeholder="Enter amount" min="0" />
 
         <br/>
         <button onclick="confirmPayment()">OK</button>
 
         <script>
+          (function(){
+            const custom = document.getElementById('customSelect');
+            const trigger = document.getElementById('selectTrigger');
+            const optionsList = document.getElementById('optionsList');
+            const hidden = document.getElementById('paymentSelectValue');
+
+            function openSelect() {
+              custom.classList.add('open');
+              optionsList.style.display = 'block';
+              optionsList.setAttribute('aria-hidden','false');
+              trigger.setAttribute('aria-expanded','true');
+            }
+            function closeSelect() {
+              custom.classList.remove('open');
+              optionsList.style.display = 'none';
+              optionsList.setAttribute('aria-hidden','true');
+              trigger.setAttribute('aria-expanded','false');
+            }
+
+            trigger.addEventListener('click', (e) => {
+              e.stopPropagation();
+              if (custom.classList.contains('open')) closeSelect();
+              else openSelect();
+            });
+
+            trigger.addEventListener('keydown', (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                if (custom.classList.contains('open')) closeSelect();
+                else openSelect();
+              } else if (e.key === 'Escape') {
+                closeSelect();
+              }
+            });
+
+            optionsList.addEventListener('click', function(e) {
+              const opt = e.target.closest('.option');
+              if (!opt) return;
+              const val = opt.dataset.value;
+              hidden.value = val;
+              trigger.querySelector('.placeholder').textContent = val;
+              closeSelect();
+            });
+
+            document.addEventListener('click', function(e) {
+              if (!custom.contains(e.target)) {
+                closeSelect();
+              }
+            });
+
+            document.addEventListener('keydown', function(e) {
+              if (e.key === 'Tab') {
+                setTimeout(() => {
+                  const active = document.activeElement;
+                  if (!custom.contains(active)) {
+                    closeSelect();
+                  }
+                }, 10);
+              }
+            });
+          })();
+
           function confirmPayment() {
-            const payment = document.getElementById('paymentSelect').value;
+            const payment = document.getElementById('paymentSelectValue').value;
             const cardNumber = document.getElementById('cardNumber').value.trim();
             const manualAmount = document.getElementById('manualAmount').value.trim();
 
@@ -716,13 +841,18 @@ h3 {
               return;
             }
 
-            window.opener.printInvoice(payment, cardNumber, manualAmount);
+            if (window.opener && typeof window.opener.printInvoice === 'function') {
+              window.opener.printInvoice(payment, cardNumber, manualAmount);
+            } else {
+              console.warn('Opener printInvoice function not found.');
+            }
             window.close();
           }
         <\/script>
       </body>
     </html>
   `;
+
   const popup = window.open('', '', options);
   if (popup) {
     popup.document.open();
@@ -732,6 +862,7 @@ h3 {
     alert('Popup blocked! Please allow popups for this site.');
   }
 }
+
 function printInvoice(paymentMethod, cardNumber, manualAmount) {
   const width = 600;
   const height = 700;
@@ -761,7 +892,7 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
     </tr>
   `).join('');
 
- <!--  ✅⤵🔰Print Section  ✅⤵🔰-->
+<!--  ✅⤵🔰Print Section  ✅⤵🔰-->
 <!--  ✅⤵🔰Print Section  ✅⤵🔰-->
 
   const invoiceContent = `
@@ -851,7 +982,7 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
 
   <!-- Right: Only Logo -->
   <div>
-    <img src="images/PosLogo.png" alt=" " style="height: 100px; width: 100px; object-fit: cover; border-radius: 4px;" />
+    <img src="images/PosLogo.png" alt="Company Logo" style="height: 60px; width: 60px; object-fit: cover; border-radius: 4px;" />
   </div>
 
 </div>
@@ -903,7 +1034,7 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
     </table>
   </div>
 
-    <!-- Container: Flex layout -->
+  <!-- Container: Flex layout -->
 <div style="display: flex; align-items: flex-start; gap: 20px; font-size: 12px; margin-top: 20px;">
 
   <!-- Left Side: Payment Info + Remarks -->
@@ -944,6 +1075,7 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
   </div>
 </div>
 
+
         <script>
           window.onload = function() {
             window.print();
@@ -964,6 +1096,7 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
 }
 
 </script>
+
 
 <!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
 <button onclick="reprintInvoice()" style="
@@ -1220,6 +1353,7 @@ function addRowToTable(description, rate, qty) {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
