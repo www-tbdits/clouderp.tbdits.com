@@ -614,19 +614,7 @@ footer {
   ">Print Invoice</button>
 
 <script>
-  // ✅ ধরো তোমার ইনভয়েসের হিসাব এখানে করা হয়েছে
-  const invoiceData = {
-    invoiceNumber: '001',
-    items: [
-      { name: 'Product A', qty: 2, price: 100 },
-      { name: 'Product B', qty: 1, price: 150 }
-    ]
-  };
 
-  // ✅ মোট এমাউন্ট ক্যালকুলেট
-  function calculateTotal(items) {
-    return items.reduce((total, item) => total + (item.qty * item.price), 0);
-  }
 function openPaymentPopup() {
  const width = 560;
   const height = 480;
@@ -756,10 +744,9 @@ function openPaymentPopup() {
         </style>
       </head>
       <body>
+
         <h3>Payment Method</h3>
-
         <p class="amount"><strong>Invoice Amount:</strong> ৳${totalAmount}</p>
-
         <label class="label" for="paymentSelect">Payment Type</label>
 
         <div class="custom-select" id="customSelect">
@@ -891,25 +878,28 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
   const customerMobile = document.getElementById('customerMobile').value.trim() || '';
   const customerAddress = document.getElementById('customerAddress').value.trim() || '';
 
-  // ✅ Product Table Data
-  const rowsData = [];
-  const tableRows = document.querySelectorAll('#productTable tbody tr');
-  tableRows.forEach(row => {
-    const description = row.querySelector('.description').textContent;
-    const qty = row.querySelector('.qty').textContent;
-    const rate = row.querySelector('.rate').textContent;
-    const amount = row.querySelector('.amount').textContent;
-    rowsData.push({ description, qty, rate, amount });
-  });
+// ✅ Product Table Data with SL. NO
+const rowsData = [];
+const tableRows = document.querySelectorAll('#productTable tbody tr');
 
-  const rowsHTML = rowsData.map(r => `
-    <tr>
-      <td>${r.description}</td>
-      <td>${r.qty}</td>
-      <td>৳${r.rate}</td>
-      <td>৳${r.amount}</td>
-    </tr>
-  `).join('');
+tableRows.forEach(row => {
+  const description = row.querySelector('.description').textContent;
+  const qty = row.querySelector('.qty').textContent;
+  const rate = row.querySelector('.rate').textContent;
+  const amount = row.querySelector('.amount').textContent;
+  rowsData.push({ description, qty, rate, amount });
+});
+
+const rowsHTML = rowsData.map((r, index) => `
+  <tr>
+    <td>${index + 1}</td> <!-- SL. NO -->
+    <td>${r.description}</td>
+    <td>${r.qty}</td>
+    <td>৳${r.rate}</td>
+    <td>৳${r.amount}</td>
+  </tr>
+`).join('');
+
 
   // ✅ Summary Section Data
   const totalQty = document.getElementById('totalQty').textContent;
@@ -920,8 +910,9 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
   const discountAmount = document.getElementById('discountAmount').textContent;
   const subTotal = document.getElementById('SubTotal').textContent;
 
-
+<!--  ✅⤵🔰InvoicePrint Section  ✅⤵🔰-->
   // ✅ HTML Template for Print Popup
+
   const invoiceContent = `
     <html>
       <head>
@@ -941,19 +932,20 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
       <body>
         <!-- Header -->
         <div class="header">
-          <div>
-            <p><strong>Invoice No:</strong> ${invoiceNumber}</p>
-            <p><strong>Date:</strong> ${new Date().toLocaleDateString('en-GB')}</p>
-          </div>
-          <div>
+       <div>
+  <p><strong>Invoice No:</strong> ${invoiceNumber}</p>
+  <p><strong>Date & Time:</strong> ${new Date().toLocaleDateString('en-GB')}  ${new Date().toLocaleTimeString('en-GB', { hour12: false })}</p>
+</div>
+
             <img src="images/PosLogo.png" alt="Logo">
           </div>
         </div>
 
-        <!-- Customer & Payment Info: Side by Side -->
+        <!-- ✅⤵🔰Customer & Payment Info: Side by Side✅⤵🔰 -->
+
 <div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px;">
 
-  <!-- Left: Customer Info -->
+  <!-- ✅⤵🔰Left: Customer Info✅⤵🔰 -->
   <div class="customer-info" style="flex: 1; min-width: 240px;">
     <h3>INVOICE TO:</h3>
     <p><strong>Name:</strong> ${customerName}</p>
@@ -961,26 +953,26 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
     <p><strong>Address:</strong> ${customerAddress}</p>
   </div>
 
-  <!-- Right: Payment Info -->
+  <!-- ✅⤵🔰Right: Payment Info✅⤵🔰 -->
   <div class="payment-info" style="flex: 1; min-width: 240px; text-align: right;">
     <h3>PAYMENT INFORMATION</h3>
     <p><strong> </strong> Mohammad Jems Ahmed Joy</p>
     <p><strong> </strong> Tech BD IT Solutions</p>
     <p><strong>Account:</strong> ${paymentMethod}</p>
-    ${cardNumber ? `<p><strong>Card Number:</strong> ${cardNumber}</p>` : ''}
-    ${manualAmount ? `<p><strong>Amount:</strong> ৳${manualAmount}</p>` : ''}
+    
   </div>
 
 </div>
 
-        <!-- Product Table -->
+        <!-- ✅⤵🔰Product Table ✅⤵🔰-->
         <table>
           <thead>
             <tr>
-              <th>Item</th>
-              <th>Qty</th>
+              <th>Sl.No</th>
+              <th>Description</th>
+              <th>Qnt</th>
               <th>Rate</th>
-              <th>Total</th>
+              <th>Amount</th>
             </tr>
           </thead>
           <tbody>
@@ -988,7 +980,7 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
           </tbody>
         </table>
 
-        <!-- Summary Block -->
+        <!-- ✅⤵🔰Summary Block ✅⤵🔰-->
         <div class="summary">
           <p><strong>Total Qty:</strong> ${totalQty}</p>
           <p><strong>Total:</strong> ৳${totalAmount}</p>
@@ -1000,12 +992,22 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
           <p style="font-size: 16px;"><strong>Sub Total:</strong> ৳${subTotal}</p>
         </div>
 
-        <!-- Payment Info -->
-        <div style="margin-top: 20px; font-size: 14px;">
-          <p><strong>Payment Info:</strong> ${paymentMethod}</p>
-          ${cardNumber ? `<p><strong>Card Number:</strong> ${cardNumber}</p>` : ''}
-          ${manualAmount ? `<p><strong>Amount Paid:</strong> ৳${manualAmount}</p>` : ''}
-        </div>
+        <!-- ✅⤵🔰Payment Info ✅⤵🔰-->
+     
+<div style="margin-top: 20px; font-size: 14px; padding: 10px; border: 0px solid ; border-radius: 8px; background-color: ;">
+  ${
+    paymentMethod || cardNo|| manualAmount
+      ? `<p><strong>Payment Info:</strong> ${paymentMethod || ''}</p>
+         ${cardNumber ? `<p><strong>Card No:</strong> ${cardNumber}</p>` : ''}
+         ${manualAmount ? `<p><strong>Amount Paid:</strong> ৳${manualAmount}</p>` : ''}
+         <p style="color: green; font-weight: bold; margin-top: 5px;">Payment has been received </p>`
+      : `<p style="color: #888;"><strong>No Payment Info Provided</strong></p>`
+  }
+</div>
+<!-- Footer: Single Line Company Info -->
+<div style="margin-top: 30px; padding-top: 10px; border-top: 1px solid #000; font-size: 12px; text-align: center; color: #555; font-family: Arial, sans-serif;">
+  <p><strong>Tech bd it solutions</strong> | Phone: +8809638665205 | +8801516-573873 | +8801323056735 | Email: info.techbditsolutions@gmail.com | www-tbdits.github.io/techbditsolutions.com | Elephant Road Dhaka, Bangladesh </p>
+</div>
 
         <script>
           window.onload = function() { window.print(); }
@@ -1025,6 +1027,8 @@ function printInvoice(paymentMethod, cardNumber, manualAmount) {
 }
 </script>
 
+
+<!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
 <!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
 <button onclick="reprintInvoice()" style="
     background: #27ae60;
@@ -1280,6 +1284,7 @@ function addRowToTable(description, rate, qty) {
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
