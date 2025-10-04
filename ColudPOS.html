@@ -1077,16 +1077,24 @@ th, td {
 
         <!-- ✅⤵🔰Payment Info ✅⤵🔰-->
      
-<div style="margin-top: 20px; font-size: 14px; padding: 10px; border: 0px solid ; border-radius: 8px; background-color: ;">
+<div style="margin-top: 20px; font-size: 14px; padding: 10px; border: 0px solid; border-radius: 8px;">
   ${
-    paymentMethod || cardNo|| manualAmount
+  
+    (document.getElementById('remarks')?.value.trim() || '') 
+      ? `<p style="font-weight: bold; color: #000;">Remarks: ${document.getElementById('remarks').value}</p>` 
+      : ''
+  }
+  ${
+
+    paymentMethod || cardNumber || manualAmount
       ? `<p><strong>Payment Info:</strong> ${paymentMethod || ''}</p>
          ${cardNumber ? `<p><strong>Card No:</strong> ${cardNumber}</p>` : ''}
          ${manualAmount ? `<p><strong>Amount Paid:</strong> ৳${manualAmount}</p>` : ''}
-         <p style="color: green; font-weight: bold; margin-top: 5px;">Payment has been received </p>`
-      : `<p style="color: #888;"><strong>No Payment Info Provided</strong></p>`
+         <p style="color: black; font-weight: bold; margin-top: 5px;">Payment has been received </p>`
+      : `<p style="color: #000;"><strong>No Payment Info Provided</strong></p>`
   }
 </div>
+
 <!-- Footer: Single Line Company Info -->
 <div style="margin-top: 30px; padding-top: 10px; border-top: 1px solid #000; font-size: 12px; text-align: center; color: #555; font-family: Arial, sans-serif;">
   <p><strong>Tech bd it solutions</strong> | Phone: +8809638665205 | +8801516-573873 | +8801323056735 | Email: info.techbditsolutions@gmail.com | www-tbdits.github.io/techbditsolutions.com | Elephant Road Dhaka, Bangladesh </p>
@@ -1379,6 +1387,7 @@ generateInvoiceNumber();
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
