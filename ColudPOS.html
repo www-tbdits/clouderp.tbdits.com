@@ -918,7 +918,9 @@ const rowsHTML = rowsData.map((r, index) => `
       <head>
         <title>Invoice</title>
         <style>
+        
 /* 📝 Base Layout */
+
 body {
   font-family: 'Times New Roman', Times, serif;
   padding: 20px;
@@ -969,7 +971,6 @@ th, td {
 /*  ✅⤵🔰 🧾POS Print Pages Styling  ✅⤵🔰 */
 
 @media print {
-
   @page {
     size: auto;       /* A4 বা thermal printer — যা আছে সেটাই ব্যবহার করবে */
     margin: 5mm;      /* thermal printer এর জন্য margin ছোট */
@@ -1378,6 +1379,7 @@ generateInvoiceNumber();
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
