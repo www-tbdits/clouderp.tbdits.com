@@ -602,9 +602,6 @@ footer {
 <!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
 <!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
 
-<!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
-<!--  ✅⤵🔰InvoicePrint Section & Payment Method section ✅⤵🔰-->
-
 <button onclick="openPaymentPopup()" style="
     background: #2980b9;
     color: white;
@@ -921,19 +918,101 @@ const rowsHTML = rowsData.map((r, index) => `
       <head>
         <title>Invoice</title>
         <style>
-          body { font-family: 'Times New Roman', Times, serif; padding: 20px; }
-          .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-          .header img { height: 100px; }
-          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-          table, th, td { border: 1px solid #333; }
-          th, td { padding: 6px; text-align: left; font-size: 14px; }
-          .summary { text-align: right; margin-top: 20px; font-size: 14px; }
-          .summary p { margin: 3px 0; }
-          .customer-info { margin-top: 10px; font-size: 14px; }
-        </style>
+/* 📝 Base Layout */
+body {
+  font-family: 'Times New Roman', Times, serif;
+  padding: 20px;
+  margin: 0;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header img {
+  height: 60px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table, th, td {
+  border: 1px solid #333;
+}
+
+th, td {
+  padding: 6px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.summary {
+  text-align: right;
+  margin-top: 20px;
+  font-size: 14px;
+}
+.summary p {
+  margin: 3px 0;
+}
+
+.customer-info {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+<!--  ✅⤵🔰 🧾POS Print Pages Styling */  ✅⤵🔰-->
+
+@media print {
+
+  @page {
+    size: auto;       /* A4 বা thermal printer — যা আছে সেটাই ব্যবহার করবে */
+    margin: 5mm;      /* thermal printer এর জন্য margin ছোট */
+  }
+
+  html, body {
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  table {
+    table-layout: auto;
+    width: 100%;
+    page-break-inside: avoid;
+  }
+
+  tr, td, th {
+    page-break-inside: avoid;
+    page-break-after: auto;
+    white-space: normal;
+    word-break: none;
+  }
+
+  table, th, td {
+    font-size: 10px;
+    padding: 4px;
+  }
+
+  .header img {
+    height: 80px;
+  }
+
+  .customer-info, .payment-info, .summary {
+    font-size: 12px;
+  }
+}
+</style>
       </head>
       <body>
-        <!-- Header -->
+      
+     <!--  ✅⤵🔰Print Invoice Header ✅⤵🔰-->   
         <div class="header">
        <div>
   <p><strong>Invoice No:</strong> ${invoiceNumber}</p>
@@ -1299,6 +1378,7 @@ generateInvoiceNumber();
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
