@@ -1017,6 +1017,78 @@ th, td {
     font-size: 12px;
   }
 }
+
+/*  ✅⤵🔰 🧾A4 Pages Styling  ✅⤵🔰 */
+
+/* ✅ A4 print */
+@media print and (min-width: 500px) {
+  @page {
+    size: A4;
+    margin: 15mm;
+  }
+
+  html, body {
+    width: auto;
+    height: auto;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Footer সবসময় নিচে */
+  }
+
+  table {
+    table-layout: auto;
+    width: 100%;
+    page-break-inside: avoid;
+  }
+
+  tr, td, th {
+    page-break-inside: avoid;
+    page-break-after: auto;
+    white-space: normal;
+    word-break: break-word;
+  }
+
+  .summary {
+    margin-top: auto; /* Footer এর আগে সব content push */
+  }
+
+  .footer {
+    margin-top: auto;
+    border-top: 1px solid #000;
+    font-size: 14px;
+    text-align: center;
+  }
+}
+
+/* ✅ 80mm thermal print - কোনো flex, natural flow */
+@media print and (max-width: 500px) {
+  body {
+    display: block;
+    min-height: auto;
+  }
+
+  .summary {
+    margin-top: 0;
+  }
+
+  .footer {
+    margin-top: 8px;
+    font-size: 12px;
+    border-top: 1px solid #000;
+  }
+
+  table {
+    table-layout: auto;
+    width: 100%;
+  }
+}
+
+
 </style>
       </head>
       <body>
@@ -1172,7 +1244,6 @@ th, td {
 </style>
 
 
-
         <!-- ✅⤵🔰Product Table ✅⤵🔰-->
         <table>
           <thead>
@@ -1262,17 +1333,40 @@ th, td {
     </html>
   `;
 
-  const printWindow = window.open('', '', options);
-  if (printWindow) {
-    printWindow.document.open();
-    printWindow.document.write(invoiceContent);
-    printWindow.document.close();
-  } else {
-    alert('Popup blocked! Please allow popups for this site.');
-  }
+const printWindow = window.open('', '', options);
+if (printWindow) {
+  printWindow.document.open();
+  printWindow.document.write(invoiceContent);
+  printWindow.document.close();
+  printWindow.focus();
+
+  let printConfirmed = false;
+
+  // print event
+  printWindow.onafterprint = function() {
+    if (printConfirmed) {
+      printWindow.close();
+      window.location.reload(); // শুধু print confirm হলে
+    } else {
+      printWindow.close(); // cancel করলে close হবে
+    }
+  };
+
+  // wait for images to load before print
+  printWindow.onload = function() {
+    setTimeout(() => {
+      printConfirmed = true;
+      printWindow.print();
+    }, 300); // 0 থেকে 300ms delay করলে image load হয়ে যাবে
+  };
+
+} else {
+  alert('Popup blocked! Please allow popups for this site.');
+}
+
+
 }
 </script>
-
 
 <!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
 <!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
@@ -1543,32 +1637,3 @@ generateInvoiceNumber();
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
