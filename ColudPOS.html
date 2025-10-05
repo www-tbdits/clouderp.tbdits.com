@@ -1087,26 +1087,67 @@ th, td {
 
         <!-- ✅⤵🔰Customer & Payment Info: Side by Side✅⤵🔰 -->
 
-<div style="display: flex; justify-content: space-between; flex-wrap: wrap; margin-top: 10px;">
-
-  <!-- ✅⤵🔰Left: Customer Info✅⤵🔰 -->
-  <div class="customer-info" style="flex: 1; min-width: 240px;">
+<div class="invoice-info">
+  <!-- Left: Customer Info -->
+  <div class="customer-info">
     <h3>INVOICE TO:</h3>
     <p><strong>Name:</strong> ${customerName}</p>
     <p><strong>Mobile:</strong> ${customerMobile}</p>
     <p><strong>Address:</strong> ${customerAddress}</p>
   </div>
 
-  <!-- ✅⤵🔰Right: Payment Info✅⤵🔰 -->
-  <div class="payment-info" style="flex: 1; min-width: 240px; text-align: right;">
+  <!-- Right: Payment Info -->
+  <div class="payment-info">
     <h3>PAYMENT INFORMATION</h3>
-    <p><strong> </strong> Mohammad Jems Ahmed Joy</p>
-    <p><strong> </strong> Tech BD IT Solutions</p>
+    <p>Mohammad Jems Ahmed </p>
+    <p>Tech BD IT Solutions</p>
     <p><strong>Account:</strong> ${paymentMethod}</p>
-    
   </div>
-
 </div>
+
+<style>
+.invoice-info {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  margin-top: 10px;
+}
+
+.customer-info, .payment-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.payment-info {
+  text-align: right;
+}
+
+/* A4 প্রিন্ট */
+@media print and (min-width: 500px) {
+  .invoice-info {
+    flex-direction: row;
+  }
+  .payment-info {
+    font-size: 14px; /* normal font */
+  }
+}
+
+/* 80mm প্রিন্ট */
+@media print and (max-width: 500px) {
+  .invoice-info {
+    flex-direction: row;
+  }
+  .customer-info {
+    width: 60%;
+  }
+  .payment-info {
+    width: 40%;
+    text-align: right;
+    font-size: 10px; /* ছোট font 80mm এর জন্য */
+  }
+}
+</style>
+
 
         <!-- ✅⤵🔰Product Table ✅⤵🔰-->
         <table>
@@ -1452,6 +1493,7 @@ generateInvoiceNumber();
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
