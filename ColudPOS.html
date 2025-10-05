@@ -626,7 +626,7 @@ function openPaymentPopup() {
 
   const paymentOptions = [
     'Cash', 'BKash', 'Nagad', 'Rocket', 'Card',
-    'Dutch-Bangla Bank', 'BRAC Bank', 'Islami Bank', 'City Bank', 'Standard Chartered Bank'
+    'Dutch-Bangla Bank', 'BRAC Bank', 'Islami Bank', 'City Bank', 'Standard Chartered Bank', 'DUE'
   ];
 
   const optionsHtml = paymentOptions.map(opt => `<div class="option" data-value="${opt}">${opt}</div>`).join('');
@@ -941,7 +941,7 @@ body {
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
+  margin-top: 0px;
 }
 
 table, th, td {
@@ -956,7 +956,7 @@ th, td {
 
 .summary {
   text-align: right;
-  margin-top: 20px;
+  margin-top: 0px;
   font-size: 14px;
 }
 .summary p {
@@ -1006,7 +1006,7 @@ th, td {
 
   table, th, td {
     font-size: 10px;
-    padding: 4px;
+    padding: 0px;
   }
 
   .header img {
@@ -1020,8 +1020,8 @@ th, td {
 </style>
       </head>
       <body>
-      
-      <!-- 🟦 A4 Header Version -->
+
+<!-- 🟦 A4 Header Version -->
 <div class="header-a4" style="
   display: flex;
   justify-content: space-between;
@@ -1063,7 +1063,7 @@ th, td {
   display: none;
 ">
   <div style="margin-bottom: 4px;">
-    <img src="images/PosLogo.png" alt="Logo" style="height: 60px;">
+    <img src="images/PosLogo.png" alt="Logo" style="height: 80px;">
   </div>
   <div style="font-size: 12px; line-height: 1.2;">
     <strong style="font-size: 14px;">TECH BD IT SOLUTIONS</strong><br>
@@ -1074,17 +1074,42 @@ th, td {
   </div>
 </div>
 
-    <!--  ✅⤵🔰Print Invoice No and Date& time  ✅⤵🔰-->  
-        <div class="header">
-       <div>
-  <p><strong>Invoice No:</strong> ${invoiceNumber}</p>
-  <p><strong>Date & Time:</strong> ${new Date().toLocaleDateString('en-GB')}  ${new Date().toLocaleTimeString('en-GB', { hour12: false })}</p>
-</div>      
-          </div>
-        </div>
+     <!--  ✅⤵🔰Print Invoice No and Date& time  ✅⤵🔰-->   
+
+    <div class="invoice-info">
+  <p class="invoice-number">
+    <strong>Invoice No:</strong> ${invoiceNumber}
+  </p>
+  <p class="invoice-date">
+    <strong>Invoice Date:</strong> ${new Date().toLocaleDateString('en-GB')} ${new Date().toLocaleTimeString('en-GB', { hour12: false })}
+  </p>
+</div>
+
+<style>
+  .invoice-info p {
+    margin: 0;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  /* 80mm thermal printer: এক লাইনে nicely aligned */
+  @media print and (max-width: 80mm) {
+    .invoice-info {
+      display: flex;
+      justify-content: space-between; /* বাম-ডান alignment */
+      align-items: center;
+      width: 100%;
+    }
+    .invoice-info p {
+      display: inline-block;
+      margin: 0;
+    }
+  }
+</style>
+
 
         <!-- ✅⤵🔰Customer & Payment Info: Side by Side✅⤵🔰 -->
-
 <div class="invoice-info">
   <!-- Left: Customer Info -->
   <div class="customer-info">
@@ -1108,7 +1133,7 @@ th, td {
   display: flex;
   justify-content: space-between;
   flex-wrap: nowrap;
-  margin-top: 10px;
+  margin-top: 0px;
 }
 
 .customer-info, .payment-info {
@@ -1147,6 +1172,7 @@ th, td {
 </style>
 
 
+
         <!-- ✅⤵🔰Product Table ✅⤵🔰-->
         <table>
           <thead>
@@ -1175,36 +1201,61 @@ th, td {
           <p style="font-size: 16px;"><strong>Sub Total:</strong> ৳${subTotal}</p>
         </div>
 
-        <!-- ✅⤵🔰Payment Info ✅⤵🔰-->
-     
-<div style="margin-top: 20px; font-size: 14px; padding: 10px; border: 0px solid; border-radius: 8px;">
+       <!-- ✅⤵🔰Payment Info ✅⤵🔰-->
+
+<div style="margin-top: 0px; font-size: 14px; padding: 0px; border: 0px solid; border-radius: 8px;">
   ${
-  
     (document.getElementById('remarks')?.value.trim() || '') 
       ? `<p style="font-weight: bold; color: #000;">Remarks: ${document.getElementById('remarks').value}</p>` 
       : ''
   }
   ${
-
     paymentMethod || cardNumber || manualAmount
       ? `<p><strong>Payment Info:</strong> ${paymentMethod || ''}</p>
          ${cardNumber ? `<p><strong>Card No:</strong> ${cardNumber}</p>` : ''}
          ${manualAmount ? `<p><strong>Amount Paid:</strong> ৳${manualAmount}</p>` : ''}
-         <p style="color: black; font-weight: bold; margin-top: 5px;">Payment has been received.</p>
-         <p style="color: black; font-weight: bold; margin-top: 5px;"> Thank you For Service with Tech bd it Solutions. </p>`
+         <p style="color: black; font-weight: bold; margin-top: 5px;">
+           ${
+             paymentMethod === 'DUE' 
+             ? 'Payment is pending.' 
+             : 'Payment has been received.'
+           }
+         </p>
+
+         <!-- ✅ Thank You + Signature এক লাইনে -->
+         <div class="thank-signature-line" style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+            <p style="color: black; font-weight: bold; margin: 0;">
+              Thank you For Service with Tech bd it Solutions.  
+            </p>
+            <div class="signature-block" style="text-align: center; width: 180px; margin-left: 10px;">
+              <div style="border-top: 1px solid #000; width: 100%; margin-bottom: 5px;"></div>
+              <p style="margin: 0; font-weight: bold; font-size: 13px;">Authorized Signature</p>
+            </div>
+         </div>`
       : `<p style="color: #000;"><strong>No Payment Info Provided</strong></p>`
   }
 </div>
 
-<!-- Footer: Single Line Company Info -->
-<div style="margin-top: 30px; padding-top: 10px; border-top: 1px solid #000; font-size: 12px; text-align: center; 
-  color: #000000; font-family: Arial, sans-serif; font-weight: bold;">
-  <p>
-     <strong>SystemBy: Tech bd it solutions</strong> Phone: +8809638665205 |+8801516-573873 |+8801323056735 |
-     Email: info.techbditsolutions@gmail.com | www-tbdits.github.io/techbditsolutions.com | Elephant Road, Dhaka, Bangladesh.
+<style>
+  /* ✅ 80mm Thermal Print এ Signature ব্লক লুকাবে */
+  @media print and (max-width: 80mm) {
+    .signature-block {
+      display: none !important;
+    }
+    .thank-signature-line {
+      justify-content: center !important; /* Signature না থাকলে Thank you center এ যাবে */
+    }
+  }
+</style>
+
+<!-- Footer: Single Line Company Info --> 
+<div style="margin-top: 8px; padding-top: 10px; border-top: 1px solid #000; font-size: 16px; text-align: center; color: #000000; font-family: 'Times New Roman', Times, serif; font-weight: bold;">
+  <p style="margin: 0; font-weight: bold;">
+    System By: Tech bd it solutions | Phone: +8809638665205  +8801516-573873 | +8801323056735 | Email: info.techbditsolutions@gmail.com | www-tbdits.github.io/techbditsolutions.com | Elephant Road, Dhaka, Bangladesh.
   </p>
 </div>
-        <script>
+
+<script>
           window.onload = function() { window.print(); }
         <\/script>
       </body>
@@ -1221,6 +1272,7 @@ th, td {
   }
 }
 </script>
+
 
 <!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
 <!--  ✅⤵🔰Reprint Section  ✅⤵🔰-->
@@ -1491,6 +1543,7 @@ generateInvoiceNumber();
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
 
 
 
