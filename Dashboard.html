@@ -94,7 +94,7 @@
 
   .image-box {
     flex: 1;
-    background-image: url('https://via.placeholder.com/600x800');
+    background-image: url('images/BG.png');
     background-size: cover;
     background-position: center;
     border-radius: 12px;
@@ -139,13 +139,13 @@
 <script>
   // যদি লগইন না থাকে, তাহলে সরাসরি Login পেজে পাঠিয়ে দেবে
   if (sessionStorage.getItem('isLoggedIn') !== 'true') {
-    window.location.replace();
+    window.location.replace('https://www-tbdits.github.io/cloudpos.tbdits.com/');
   }
 </script>
 
 <header>
   <div class="company-info" style="display:flex; align-items:center;">
-    <img src="https://via.placeholder.com/50" alt="TBIS">
+    <img src="images/Tech bd it solutions logo.png" alt= >
     <div class="company-name">TECH BD IT SOLUTIONS</div>
   </div>
   <div>Logged in as: DemoUser</div>
@@ -193,7 +193,7 @@
 <script>
   const features = [
     { id: 'reports', label: 'Sales Reports', icon: 'bx bxs-file', link: 'reports.html' },
-    { id: 'sales', label: 'Sales of Point', icon: 'bx bxs-cart', link: 'file:///C:/Users/Kataban%20IT-PC/Desktop/CloudPos.html' },
+    { id: 'sales', label: 'Sales of Point', icon: 'bx bxs-cart', link: 'ColudPOS.html' },
     { id: 'customers', label: 'Customers', icon: 'bx bxs-user', link: 'customers.html' },
     { id: 'products', label: 'Products', icon: 'bx bxs-box', link: 'products.html' },
     { id: 'user-permission', label: 'User Control', icon: 'bx bxs-user-check', link: 'user-control.html' },
