@@ -302,28 +302,16 @@ footer {
    <p>+8809638665205 | +8801516-573873 |+8801323056735</p>
     
 
-<!-- ✅⤵🔰Close Button & Date&Time ✅⤵🔰 -->
-<button id="closeBtn" style="
-  background-color: #e74c3c; 
-  color: white; 
-  border: none; 
-  padding: 4px 8px;
-  cursor: pointer;
-  font-family: monospace;
-  font-size: 14px;
-  font-weight: 500;
-">
-  Close
-</button>
+<!-- ✅  Date&Time ✅ -->
 
 <span id="time" style="
   margin-left: 15px; 
   font-family: monospace; 
   font-size: 14px; 
   color: white; 
-  background-color: green;
+  background-color: red;
   padding: 4px 12px;
-  border-radius: 5px;
+  border-radius: 0px;
   display: inline-block;
   min-width: 100px;
   text-align: center;
@@ -334,7 +322,7 @@ footer {
   font-family: monospace; 
   font-size: 14px; 
   color: white; 
-  background-color: #2980b9;
+  background-color: green;
   padding: 4px 8px;
   border-radius: 0px;
   display: inline-block;
@@ -366,17 +354,7 @@ footer {
   updateClockDate();
 </script>
 
-<!-- ✅ Close Button Script -->
-<script>
-  document.getElementById('closeBtn').addEventListener('click', () => {
-    // ধরো এটা popupOverlay — চাইলে অন্য কোনো element-এর ID দাও
-    const popup = document.getElementById('popupOverlay'); 
-    if (popup) {
-      popup.style.display = 'none';  // close button চাপলে popup বন্ধ হবে
-    }
-  });
 </script>
-
 
 
   </div>
@@ -1603,3 +1581,4 @@ generateInvoiceNumber();
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
+
