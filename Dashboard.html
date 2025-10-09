@@ -6,6 +6,7 @@
 <title>Cloud POS Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
 <style>
   body {
     font-family: 'Roboto', sans-serif;
@@ -44,19 +45,20 @@
 
   main {
     flex: 1;
-    padding: 100px 20px 80px;
     display: flex;
     gap: 20px;
     justify-content: flex-start;
-    align-items: flex-start;
+    align-items: stretch;
+    padding: 0;
+    margin-top: 70px;
+    margin-bottom: 20px;
   }
 
-  /* Icon grid */
   .icon-grid {
     display: grid;
-    grid-template-columns: repeat(2, 150px); /* 2 icon per row */
+    grid-template-columns: repeat(2, 150px);
     gap: 3px;
-    justify-items: start; /* left alignment */
+    justify-items: start;
     align-items: start;
   }
 
@@ -68,7 +70,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    box-shadow: 0;
+    box-shadow: none;
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
@@ -90,29 +92,15 @@
     text-align: center;
   }
 
-  /* Right image box */
-
-main {
+  .image-box {
     flex: 1;
-    display: flex;
-    gap: 20px;
-    justify-content: flex-start;
-    align-items: stretch; /* icon-grid এবং image-box পুরো height নেবে */
-    padding:  0px; /* header/footer থেকে space বাদ */
-    margin-top: 70px; /* header height */
-    margin-bottom: 20px; /* footer height */
-}
-
-.image-box {
-    flex: 1;
-    background-color: none; /* light gray */
-    background-image: url('images/BG.png');
+    background-image: url('https://via.placeholder.com/600x800');
     background-size: cover;
     background-position: center;
     border-radius: 12px;
     border: 2px solid #4f46e5;
     box-shadow: 0 4px 0 3px rgba(0,0,0,0.1);
-}
+  }
 
   footer {
     background: #4f46e5;
@@ -147,9 +135,17 @@ main {
 </head>
 <body>
 
+<!-- 🟡 Login Check -->
+<script>
+  // যদি লগইন না থাকে, তাহলে সরাসরি Login পেজে পাঠিয়ে দেবে
+  if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+    window.location.replace();
+  }
+</script>
+
 <header>
   <div class="company-info" style="display:flex; align-items:center;">
-    <img src="images/FV.png" alt=" ">
+    <img src="https://via.placeholder.com/50" alt="TBIS">
     <div class="company-name">TECH BD IT SOLUTIONS</div>
   </div>
   <div>Logged in as: DemoUser</div>
@@ -159,9 +155,6 @@ main {
   <div class="icon-grid" id="iconGrid"></div>
   <div class="image-box"></div>
 </main>
-
-
-
 
 <!-- Fullscreen Popup -->
 <div id="popupOverlay" style="
@@ -200,13 +193,13 @@ main {
 <script>
   const features = [
     { id: 'reports', label: 'Sales Reports', icon: 'bx bxs-file', link: 'reports.html' },
-    { id: 'sales', label: 'Sales of Point', icon: 'bx bxs-cart', link: 'ColudPOS.html' },
+    { id: 'sales', label: 'Sales of Point', icon: 'bx bxs-cart', link: 'file:///C:/Users/Kataban%20IT-PC/Desktop/CloudPos.html' },
     { id: 'customers', label: 'Customers', icon: 'bx bxs-user', link: 'customers.html' },
     { id: 'products', label: 'Products', icon: 'bx bxs-box', link: 'products.html' },
     { id: 'user-permission', label: 'User Control', icon: 'bx bxs-user-check', link: 'user-control.html' },
     { id: 'inventory', label: 'Inventory', icon: 'bx bxs-data', link: 'inventory.html' },
     { id: 'help', label: 'Help', icon: 'bx bxs-help-circle', link: 'help.html' },
-    { id: 'logout', label: 'Logout', icon: 'bx bxs-log-out-circle' } // Logout আইকন
+    { id: 'logout', label: 'Logout', icon: 'bx bxs-log-out-circle' }
   ];
 
   const iconGrid = document.getElementById('iconGrid');
@@ -221,10 +214,11 @@ main {
 
     card.onclick = () => {
       if(f.id === 'logout'){
-        alert('Logging out...');
-        // window.location.href = 'logout.php'; // বাস্তব লগআউট হলে এখান ব্যবহার করুন
+        // লগইন ডেটা মুছে ফেলা
+        sessionStorage.removeItem('isLoggedIn');
+        // আগের পেজে ব্যাক বন্ধ
+        window.location.replace('https://www-tbdits.github.io/cloudpos.tbdits.com/');
       } else if(f.link){
-        // iframe পপআপ খুলা
         popupIframe.src = f.link;
         popupOverlay.style.display = 'flex';
       }
@@ -239,12 +233,8 @@ main {
   };
 </script>
 
-</body>
-</html>
-
-<!-- 🔻 Simple One-Line Footer 🔻 -->
+<!-- Footer -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
 <footer style="
   background: #3742a1;
   color: white;
@@ -255,14 +245,12 @@ main {
   border-top: 1px solid #27ae60;
 ">
   <span>System by: <strong>Tech BD IT Solutions</strong></span> | 
-<span>Developed by: <strong>Md. Jems Ahmed Joy></span>
-
-  <i class="fas fa-globe"></i> <a href="www-tbdits.github.io/techbditsolutions.com" target="_blank" style="color: #1abc9c; text-decoration: none;"> www-tbdits.github.io\techbditsolutions.com </a> |
+  <span>Developed by: <strong>Md. Jems Ahmed Joy</strong></span>
+  <i class="fas fa-globe"></i> 
+<a href="https://www-tbdits.github.io/techbditsolutions.com" target="_blank" style="color: #1abc9c; text-decoration: none;"> www-tbdits.github.io/techbditsolutions.com </a> |
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
 
-
-
-
-
+</body>
+</html>
