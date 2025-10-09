@@ -6,6 +6,7 @@
 <title>Cloud POS Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
 <style>
   body {
     font-family: 'Roboto', sans-serif;
@@ -130,61 +131,21 @@
       margin-top: 20px;
     }
   }
-
-  /* Fullscreen popup styling */
-  #popupOverlay {
-    display: none;
-    position: fixed;
-    top:0; left:0; 
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.8);
-    z-index: 9999;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #popupContent {
-    width: 80%;
-    height: 80%;
-    background: #fff;
-    position: relative;
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  #closePopup {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    font-size: 20px;
-    background: red;
-    color: #fff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    z-index: 1000;
-    padding: 5px 10px;
-  }
-
-  #popupIframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-  }
 </style>
 </head>
 <body>
 
-<!-- Login check -->
+<!-- 🟡 Login Check -->
 <script>
+  // যদি লগইন না থাকে, তাহলে সরাসরি Login পেজে পাঠিয়ে দেবে
   if (sessionStorage.getItem('isLoggedIn') !== 'true') {
-    window.location.replace( );
+    window.location.replace(');
   }
 </script>
 
 <header>
   <div class="company-info" style="display:flex; align-items:center;">
-    <img src="images/Tech bd it solutions logo.png" alt="Logo">
+    <img src="images/Tech bd it solutions logo.png" alt= >
     <div class="company-name">TECH BD IT SOLUTIONS</div>
   </div>
   <div>Logged in as: DemoUser</div>
@@ -196,17 +157,43 @@
 </main>
 
 <!-- Fullscreen Popup -->
-<div id="popupOverlay">
-  <div id="popupContent">
-    <button id="closePopup">X</button>
-    <iframe id="popupIframe" src=""></iframe>
+<div id="popupOverlay" style="
+    display: none;
+    position: fixed;
+    top:0; left:0; 
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+">
+  <div id="popupContent" style="
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      position: relative;
+      padding: 0px;
+  ">
+    <button id="closePopup" style="
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        font-size: 20px;
+        background: red;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        z-index: 1000;
+    ">X</button>
+    <iframe id="popupIframe" src="" style="width:100%; height:100%; border:none;"></iframe>
   </div>
 </div>
 
 <script>
   const features = [
     { id: 'reports', label: 'Sales Reports', icon: 'bx bxs-file', link: 'reports.html' },
-    { id: 'sales', label: 'Sales of Point', icon: 'bx bxs-cart', link: 'ColudPOS.html' },
+    { id: 'sales', label: 'Sales of Point', icon: 'bx bxs-cart', link: 'CloudPos.html' },
     { id: 'customers', label: 'Customers', icon: 'bx bxs-user', link: 'customers.html' },
     { id: 'products', label: 'Products', icon: 'bx bxs-box', link: 'products.html' },
     { id: 'user-permission', label: 'User Control', icon: 'bx bxs-user-check', link: 'user-control.html' },
@@ -223,11 +210,13 @@
   features.forEach(f => {
     const card = document.createElement('div');
     card.className = 'icon-card';
-    card.innerHTML = `<i class='${f.icon}'></i><br><span>${f.label}</span>`;
-    
+    card.innerHTML = `<i class='${f.icon}' style="font-size:40px;"></i><br><span>${f.label}</span>`;
+
     card.onclick = () => {
       if(f.id === 'logout'){
+        // লগইন ডেটা মুছে ফেলা
         sessionStorage.removeItem('isLoggedIn');
+        // আগের পেজে ব্যাক বন্ধ
         window.location.replace('https://www-tbdits.github.io/cloudpos.tbdits.com/');
       } else if(f.link){
         popupIframe.src = f.link;
@@ -238,23 +227,30 @@
     iconGrid.appendChild(card);
   });
 
-  // Close popup logic
   closePopup.onclick = () => {
     popupOverlay.style.display = 'none';
-    popupIframe.src = ''; // iframe content reset
+    popupIframe.src = '';
   };
 </script>
 
-<footer>
+<!-- Footer -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+<footer style="
+  background: #3742a1;
+  color: white;
+  padding: 5px 6px;
+  font-size: 15px;
+  text-align: center;
+  margin-top:3px;
+  border-top: 1px solid #27ae60;
+">
   <span>System by: <strong>Tech BD IT Solutions</strong></span> | 
   <span>Developed by: <strong>Md. Jems Ahmed Joy</strong></span>
   <i class="fas fa-globe"></i> 
-  <a href="https://www-tbdits.github.io/techbditsolutions.com" target="_blank" style="color: #1abc9c; text-decoration: none;"> www-tbdits.github.io/techbditsolutions.com </a> |
+<a href="https://www-tbdits.github.io/techbditsolutions.com" target="_blank" style="color: #1abc9c; text-decoration: none;"> www-tbdits.github.io/techbditsolutions.com </a> |
   <i class="fas fa-phone-alt"></i> +8809638665205, +8801516-573873 ,+8801323056735 |
   <i class="fas fa-map-marker-alt"></i> Dhaka-1205
 </footer>
 
 </body>
 </html>
-
-
