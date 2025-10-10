@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<title>User Control</title>
+<style>
+body{
+  font-family:'Segoe UI',Tahoma,sans-serif;
+  padding:20px;
+  background:linear-gradient(135deg,none);
+  min-height:100vh;
+}
+.container{
+  background:#fff;
+  max-width: 1500px;
+  margin: 0 auto;
+  border-radius:10px;
+  padding: 0px;
+  box-shadow:0 px5 0px rgba(0,0,0,0.2);
+}
+h2{
+  color:#1e3a8a;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+button.add-user{
+  background:#1e90ff;
+  color:white;
+  font-size:14px;
+  padding:8px 15px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+button.add-user:hover{background:#0b6cc4;}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:15px;
+  background:#fff;
+  border-radius: 0px;
+  overflow:hidden;
+}
+th{
+  background:#1e3a8a;
+  color:#fff;
+  padding:10px;
+  font-size:18px;
+}
+td{
+  padding:8px;
+  text-align:center;
+  border-bottom:1px solid #eee;
+  font-size:16px;
+}
+tr:hover{background:#f3f4f6;}
+
+select.role-select{
+  padding:6px 8px;
+  border:1px solid #ccc;
+  border-radius:5px;
+}
+
+button{padding:4px 8px;border:none;border-radius:5px;cursor:pointer;margin:2px;font-size:14px;}
+button.edit{background:#4f46e5;color:#fff;}
+button.delete{background:#ef4444;color:#fff;}
+button.perm{background:#22c55e;color:#fff;}
+
+/* Eye icon compact style */
+button.eye{
+  background:none;
+  border:none;
+  padding:0;
+  margin-left:5px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+/* Modal */
+.modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);justify-content:center;align-items:center;}
+.modal-content{background:#fff;padding:20px;border-radius:10px;width:400px;max-height:80%;overflow:auto;position:relative;}
+.close{position:absolute;right:15px;top:10px;cursor:pointer;font-weight:bold;font-size:18px;}
+
+.input-small{width:100%;padding:8px;margin:6px 0;border-radius:6px;border:1px solid #ccc;}
+.row-actions{display:flex;gap:6px;justify-content:center;align-items:center;}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>User Control
+    <button class="add-user" onclick="openAddUserModal()">➕ Add User</button>
+  </h2>
+
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Password</th>
+        <th>Role</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</div>
+
+<!-- Permissions Modal -->
+<div class="modal" id="permModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('permModal')">&times;</span>
+    <h3>Permissions - <span id="permUser"></span></h3>
+    <div id="permCheckboxes"></div>
+    <button onclick="savePermissions()">Save</button>
+  </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal" id="addUserModal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal('addUserModal')">&times;</span>
+    <h3>Add New User</h3>
+    <input class="input-small" type="text" id="newUsername" placeholder="Username">
+    <input class="input-small" type="password" id="newPassword" placeholder="Password">
+    <select id="newRole" class="input-small">
+      <option value="Admin">Admin</option>
+      <option value="Manager">Manager</option>
+      <option value="Normal">Normal</option>
+      <option value="Cashier">Cashier</option>
+    </select>
+    <button onclick="addNewUser()">Add</button>
+  </div>
+</div>
+
+<script>
+const allPermissions = ['Sales Reports','Sales of Point','Customers','Products','User Control','Inventory','Help','Logout'];
+let users = JSON.parse(localStorage.getItem('tbdits_users')) || [];
+let currentIndex = null;
+
+function renderUsers(){
+  const tbody = document.querySelector('#userTable tbody');
+  tbody.innerHTML='';
+  users.forEach((user,i)=>{
+    const roleHTML = `
+      <select class="role-select" onchange="changeRole(${i},this.value)">
+        <option value="Admin" ${user.role==='Admin'?'selected':''}>Admin</option>
+        <option value="Manager" ${user.role==='Manager'?'selected':''}>Manager</option>
+        <option value="Normal" ${user.role==='Normal'?'selected':''}>Normal</option>
+        <option value="Cashier" ${user.role==='Cashier'?'selected':''}>Cashier</option>
+      </select>`;
+
+    const passId = `pass_${i}`;
+    const eyeId = `eye_${i}`;
+    const masked = user.password ? '*'.repeat(Math.max(user.password.length, 6)) : '';
+    tbody.innerHTML+=`
+      <tr>
+        <td>${escapeHtml(user.username)}</td>
+        <td>
+          <span id="${passId}">${masked}</span>
+          <button class="eye" id="${eyeId}" onclick="togglePassword(${i})">👁️</button>
+        </td>
+        <td>${roleHTML}</td>
+        <td class="row-actions">
+          <button class="edit" onclick="editUser(${i})">Edit</button>
+          <button class="delete" onclick="deleteUser(${i})">Delete</button>
+          <button class="perm" onclick="openPerm(${i})">Permissions</button>
+        </td>
+      </tr>`;
+  });
+}
+
+function saveUsers(){localStorage.setItem('tbdits_users',JSON.stringify(users));renderUsers();}
+function changeRole(i,val){users[i].role=val;saveUsers();}
+
+function editUser(i){
+  const newName = prompt('Change username:', users[i].username);
+  if(newName && newName.trim()){
+    if(users.some((u,idx)=>u.username===newName.trim() && idx!==i)){
+      alert('Username already exists');
+      return;
+    }
+    users[i].username = newName.trim();
+  }
+  const newPass = prompt('Change password (leave blank to keep current):', '');
+  if(newPass !== null){
+    if(newPass.trim() !== '') users[i].password = newPass;
+  }
+  saveUsers();
+}
+
+function deleteUser(i){
+  if(confirm('Delete user?')){
+    users.splice(i,1);
+    saveUsers();
+  }
+}
+
+function openPerm(i){
+  currentIndex=i;
+  document.getElementById('permUser').textContent=users[i].username;
+  const box=document.getElementById('permCheckboxes');
+  box.innerHTML='';
+  allPermissions.forEach(p=>{
+    const checked = users[i].permissions?.includes(p) ? 'checked' : '';
+    box.innerHTML += `<label style="display:block;margin:6px 0;"><input type="checkbox" value="${escapeHtml(p)}" ${checked}> ${p}</label>`;
+  });
+  document.getElementById('permModal').style.display='flex';
+}
+
+function savePermissions(){
+  const selected = [...document.querySelectorAll('#permCheckboxes input:checked')].map(el=>el.value);
+  users[currentIndex].permissions = selected;
+  saveUsers();
+  closeModal('permModal');
+}
+
+function openAddUserModal(){document.getElementById('addUserModal').style.display='flex';}
+
+function addNewUser(){
+  const username = document.getElementById('newUsername').value.trim();
+  const password = document.getElementById('newPassword').value;
+  const role = document.getElementById('newRole').value;
+  if(!username || !password){ alert('Fill all fields'); return; }
+  if(users.some(u=>u.username===username)){ alert('Username exists'); return; }
+  users.push({ username, password, role, permissions: [] });
+  saveUsers();
+  closeModal('addUserModal');
+  document.getElementById('newUsername').value='';
+  document.getElementById('newPassword').value='';
+}
+
+function togglePassword(i){
+  const passEl = document.getElementById(`pass_${i}`);
+  const eyeBtn = document.getElementById(`eye_${i}`);
+  if(!passEl || !users[i]) return;
+  if(eyeBtn.dataset.show === '1'){
+    passEl.textContent = users[i].password ? '*'.repeat(Math.max(users[i].password.length, 6)) : '';
+    eyeBtn.dataset.show = '0';
+    eyeBtn.textContent = '👁️';
+  } else {
+    passEl.textContent = users[i].password || '';
+    eyeBtn.dataset.show = '1';
+    eyeBtn.textContent = '👁️';
+  }
+}
+
+function closeModal(id){document.getElementById(id).style.display='none';}
+function escapeHtml(text){
+  if(!text && text !== 0) return '';
+  return String(text)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+renderUsers();
+</script>
+
+</body>
+</html>
