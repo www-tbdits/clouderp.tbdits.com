@@ -117,34 +117,32 @@
   </div>
 
   <script>
-    const users = [
-      { username: 'jems', password: '6735' },
-      { username: 'nusrat', password: '6411' },
-      { username: 'joy', password: 'jems67' },
-      { username: '-------', password: '-----' }
-    ];
+   function handleLogin(e) {
+  e.preventDefault();
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value.trim();
 
-    function handleLogin(e) {
-      e.preventDefault();
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value.trim();
+  const userControlUsers = JSON.parse(localStorage.getItem('tbdits_users')) || [];
+  const defaultUsers = [{ username: 'jems', password: '6735', permissions: ['Sales Reports','Sales of Point','Customers','Products','User Control','Inventory','Help','Logout'] }];
+  const users = [...defaultUsers, ...userControlUsers];
 
-      const matchedUser = users.find(user => user.username === username && user.password === password);
+  const matchedUser = users.find(user => user.username === username && user.password === password);
 
-      if (matchedUser) {
-        alert("Login Successful! Redirecting to Billing Page...");
-        localStorage.setItem('tbdits_logged_in', 'true');
-        localStorage.setItem('tbdits_user', username);
-        window.location.href = "Dashboard.html";
-      } else {
-        alert("Invalid username or password!");
-      }
+  if (matchedUser) {
+    alert("Login Successful! Redirecting to Dashboard...");
+    localStorage.setItem('tbdits_logged_in', 'true');
+    localStorage.setItem('tbdits_user', JSON.stringify(matchedUser)); // ✅ full user save
+    window.location.href = "Dashboard.html";
+  } else {
+    alert("Invalid username or password!");
+  }
+}
 
-      return false;
-    }
   </script>
 </body>
 </html>
+
+
 
 
 
